@@ -1269,8 +1269,8 @@ export class MekkoChart implements IVisual {
                                         objectName: "columnBorder",
                                         propertyName: "show"
                                     },
-                                    //value: MekkoChart.DefaultSettings.columnBorder.show
-                                    value: false
+                                    value: MekkoChart.DefaultSettings.columnBorder.show
+                                    //value: false
                                 }
                             }
                         }
