@@ -1222,6 +1222,7 @@ export class MekkoChart implements IVisual {
             columnBorder: this.borderObjectProperties
         };
 
+        
         const borderShow: boolean = dataViewObjects.getValue(
             borderObjects,
             MekkoChart.Properties["columnBorder"]["show"],
@@ -1237,8 +1238,40 @@ export class MekkoChart implements IVisual {
             MekkoChart.Properties["columnBorder"]["width"],
             MekkoChart.DefaultSettings.columnBorder.width);
 
-        
-    
+        let legendShow: boolean,
+            legendShowTitle: boolean,
+            legendTitleText: string,
+            legendFontSize: number,
+            legendPos: string;
+            
+        legendShow = dataViewObject.getValue<boolean>(
+            this.legendObjectProperties,
+            legendProps.show,
+            this.legend.isVisible());
+
+        legendShowTitle = dataViewObject.getValue<boolean>(
+            this.legendObjectProperties,
+            legendProps.showTitle,
+            true);
+
+        legendTitleText = dataViewObject.getValue<string>(
+            this.legendObjectProperties,
+            legendProps.titleText,
+            this.layerLegendData && this.layerLegendData.title
+                ? this.layerLegendData.title
+                : "");
+
+        legendFontSize = dataViewObject.getValue<number>(
+            this.legendObjectProperties,
+            legendProps.fontSize,
+            this.layerLegendData && this.layerLegendData.fontSize
+                ? this.layerLegendData.fontSize
+                : MekkoChart.DefaultLabelFontSizeInPt);
+
+        legendPos = dataViewObject.getValue<string>(
+            this.legendObjectProperties,
+            legendProps.position,
+            legendPosition.top);
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1308,7 +1341,56 @@ export class MekkoChart implements IVisual {
             description: "Legend",
             displayName: "Legend",
             uid: "legend_uid",
-            groups: []
+            groups: [
+                {
+                    displayName: "Legend",
+                    uid: "legendCard_legend_group_uid",
+                    slices: [
+                        {
+                            uid: "legendCard_legend_show_uid",
+                            displayName: "Show",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "legend",
+                                        propertyName: "show"
+                                    },
+                                    value: legendShow
+                                }
+                            }
+                        },
+                        {
+                            uid: "legendCard_legend_showTitle_uid",
+                            displayName: "Show Title",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "legend",
+                                        propertyName: "showTitle"
+                                    },
+                                    value: legendShowTitle
+                                }
+                            }
+                        },
+                        {
+                            uid: "legendCard_legend_titleText_uid",
+                            displayName: "Title Text",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.TextArea,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "legend",
+                                        propertyName: "titleText"
+                                    },
+                                    value: //TBD
+                                }
+                            }
+                        },
+                    ]
+                }
+            ]
         };
     
         let seriesCard : powerbi.visuals.FormattingCard = {
@@ -1342,7 +1424,8 @@ export class MekkoChart implements IVisual {
         //Create Column Border Group
         
         const formattingModel: powerbi.visuals.FormattingModel = { cards: [
-            columnBorderCard
+            columnBorderCard,
+            legendCard
         ]};
         return formattingModel;
     }
