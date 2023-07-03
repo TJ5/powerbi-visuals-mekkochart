@@ -1374,20 +1374,44 @@ export class MekkoChart implements IVisual {
                                 }
                             }
                         },
+                        /*
                         {
                             uid: "legendCard_legend_titleText_uid",
                             displayName: "Title Text",
                             control: {
-                                type: powerbi.visuals.FormattingComponent.TextArea,
+                                type: powerbi.visuals.FormattingComponent.TextInput,
                                 properties: {
                                     descriptor: {
                                         objectName: "legend",
                                         propertyName: "titleText"
                                     },
-                                    value: //TBD
+                                    value: {
+                                        value: legendTitleText,
+                                        placeholder: "Title Text",
+                                        descriptor: {
+                                            objectName: "legend",
+                                            propertyName: "titleText"
+                                        },
+                                    }
                                 }
                             }
                         },
+                        */
+                        {
+                            uid: "legendCard_legend_titleTextSize_uid",
+                            displayName: "Text Size",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "legend",
+                                        propertyName: "fontSize"
+                                    },
+                                    value: legendFontSize
+                                }
+                            }
+                        },
+
                     ]
                 }
             ]
