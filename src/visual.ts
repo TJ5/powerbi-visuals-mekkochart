@@ -1215,41 +1215,30 @@ export class MekkoChart implements IVisual {
         instances.push(instance);
     }
 
-    public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstanceEnumeration {
-        const instances: VisualObjectInstance[] = [];
-        const layersLength: number = this.layers
-            ? this.layers.length
-            : 0;
-
-        if (options.objectName === "columnBorder") {
-            this.enumerateBorder(instances);
-        }
-        else if (options.objectName === "legend") {
-            if (!this.shouldShowLegendCard()) {
-                return;
-            }
-
-            this.enumerateLegend(options, instances);
-        }
-        else if (options.objectName === "categoryAxis" && this.hasCategoryAxis) {
-            this.getCategoryAxisValues(instances);
-        }
-        else if (options.objectName === "valueAxis") {
-            this.getValueAxisValues(instances);
-        }
-
-        for (let i: number = 0; i < layersLength; i++) {
-            const layer: IColumnChart = this.layers[i];
-
-            if (layer.enumerateObjectInstances) {
-                layer.enumerateObjectInstances(instances, options);
-            }
-        }
-
-        return instances;
-    }
+    
     public getFormattingModel(): powerbi.visuals.FormattingModel  {
-        console.log("Format Pane Test Print");
+
+        const borderObjects: powerbi.DataViewObjects = {
+            columnBorder: this.borderObjectProperties
+        };
+
+        const borderShow: boolean = dataViewObjects.getValue(
+            borderObjects,
+            MekkoChart.Properties["columnBorder"]["show"],
+            MekkoChart.DefaultSettings.columnBorder.show);
+
+        const borderColor: string = dataViewObjects.getFillColor(
+            borderObjects,
+            MekkoChart.Properties["columnBorder"]["color"],
+            MekkoChart.DefaultSettings.columnBorder.color);
+    
+        const borderWidth: number = dataViewObjects.getValue(
+            borderObjects,
+            MekkoChart.Properties["columnBorder"]["width"],
+            MekkoChart.DefaultSettings.columnBorder.width);
+
+        
+    
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1261,7 +1250,7 @@ export class MekkoChart implements IVisual {
                     slices : [
                         {
                             uid: "columnBorderCard_columnBorder_show_uid",
-                            displayName: "Show Column Borders",
+                            displayName: "Show",
                             control: {
                                 type: powerbi.visuals.FormattingComponent.ToggleSwitch,
                                 properties: {
@@ -1269,8 +1258,37 @@ export class MekkoChart implements IVisual {
                                         objectName: "columnBorder",
                                         propertyName: "show"
                                     },
-                                    value: MekkoChart.DefaultSettings.columnBorder.show
-                                    //value: false
+                                    value: borderShow
+                                }
+                            }
+                        },
+                        
+                        {
+                            uid: "columnBorderCard_columnBorder_color_uid",
+                            displayName: "Color",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "columnBorder",
+                                        propertyName: "color"
+                                    },
+                                    value: {value: borderColor}
+                                }
+                            }
+                        },
+                        
+                        {
+                            uid: "columnBorderCard_columnBorder_width_uid",
+                            displayName: "Width",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.Slider,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "columnBorder",
+                                        propertyName: "width"
+                                    },
+                                    value: borderWidth
                                 }
                             }
                         }
