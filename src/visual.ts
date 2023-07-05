@@ -1223,6 +1223,7 @@ export class MekkoChart implements IVisual {
         };
 
         
+        
         const borderShow: boolean = dataViewObjects.getValue(
             borderObjects,
             MekkoChart.Properties["columnBorder"]["show"],
@@ -1272,6 +1273,9 @@ export class MekkoChart implements IVisual {
             this.legendObjectProperties,
             legendProps.position,
             legendPosition.top);
+
+        let legendSortSettings: MekkoLegendSortSettings = (<BaseColumnChart>this.layers[0]).getLegendSortSettings();
+
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1374,7 +1378,6 @@ export class MekkoChart implements IVisual {
                                 }
                             }
                         },
-                        /*
                         {
                             uid: "legendCard_legend_titleText_uid",
                             displayName: "Title Text",
@@ -1385,18 +1388,11 @@ export class MekkoChart implements IVisual {
                                         objectName: "legend",
                                         propertyName: "titleText"
                                     },
-                                    value: {
-                                        value: legendTitleText,
-                                        placeholder: "Title Text",
-                                        descriptor: {
-                                            objectName: "legend",
-                                            propertyName: "titleText"
-                                        },
-                                    }
+                                    value: legendTitleText,   
+                                    placeholder: "Title Text",
                                 }
                             }
                         },
-                        */
                         {
                             uid: "legendCard_legend_titleTextSize_uid",
                             displayName: "Text Size",
@@ -1412,6 +1408,27 @@ export class MekkoChart implements IVisual {
                             }
                         },
 
+                    ]
+                },
+                {
+                    displayName: "Sort Legend",
+                    uid: "legendCard_sortLegend_group_uid",
+                    slices: [
+                        {
+                            uid: "legendCard_sortLegend_enable_uid",
+                            displayName: "Enabled",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortLegend",
+                                        propertyName: "enabled"
+                                    },
+                                    value: legendSortSettings.enabled
+                                    //value: false
+                                }
+                            }
+                        },
                     ]
                 }
             ]
