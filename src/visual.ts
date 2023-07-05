@@ -1215,14 +1215,11 @@ export class MekkoChart implements IVisual {
         instances.push(instance);
     }
 
-    
     public getFormattingModel(): powerbi.visuals.FormattingModel  {
 
         const borderObjects: powerbi.DataViewObjects = {
             columnBorder: this.borderObjectProperties
         };
-
-        
         
         const borderShow: boolean = dataViewObjects.getValue(
             borderObjects,
@@ -1276,7 +1273,11 @@ export class MekkoChart implements IVisual {
 
         let legendSortSettings: MekkoLegendSortSettings = (<BaseColumnChart>this.layers[0]).getLegendSortSettings();
         let seriesSortSettings: MekkoSeriesSortSettings = (<BaseColumnChart>this.layers[0]).getSeriesSortSettings();
-
+        let xAxisLabelsSettings: MekkoXAxisLabelsSettings = (<BaseColumnChart>this.layers[0]).getXAxisLabelsSettings();
+        let dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
+        let showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints;
+        let defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
+        let labelSettings: VisualDataLabelsSettings = (<BaseColumnChart>this.layers[0]).getData().labelSettings;
 
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
@@ -1301,7 +1302,6 @@ export class MekkoChart implements IVisual {
                                 }
                             }
                         },
-                        
                         {
                             uid: "columnBorderCard_columnBorder_color_uid",
                             displayName: "Color",
@@ -1316,7 +1316,6 @@ export class MekkoChart implements IVisual {
                                 }
                             }
                         },
-                        
                         {
                             uid: "columnBorderCard_columnBorder_width_uid",
                             displayName: "Width",
@@ -1340,7 +1339,28 @@ export class MekkoChart implements IVisual {
             description: "Labels",
             displayName: "Labels",
             uid: "labels_uid",
-            groups: []
+            groups: [
+                {
+                    displayName: "Labels",
+                    uid: "labelsCard_labels_group_uid",
+                    slices: [
+                        {
+                            displayName: "Show",
+                            uid: "labelsCard_labels_show_uid",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "labels",
+                                        propertyName: "show"
+                                    },
+                                    value: labelSettings.show
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
         };
     
         let legendCard : powerbi.visuals.FormattingCard = {
@@ -1409,7 +1429,6 @@ export class MekkoChart implements IVisual {
                                 }
                             }
                         },
-
                     ]
                 },
                 {
@@ -1532,19 +1551,117 @@ export class MekkoChart implements IVisual {
                 }
             ]
         };
-    
+        
         let axisCard : powerbi.visuals.FormattingCard = {
             description: "Axis",
             displayName: "Axis",
             uid: "axis_uid",
-            groups: []
+            groups: [
+                {
+                    displayName: "Axis Labels",
+                    uid: "axisCard_axisLabels_group_uid",
+                    slices: [
+                        {
+                            uid: "axisCard_axisLabels_enable_uid",
+                            displayName: "Enable Rotation",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "xAxisLabels",
+                                        propertyName: "enabled"
+                                    },
+                                    value: xAxisLabelsSettings.enableRotataion
+                                }
+                            }
+                        },
+                    ]
+                }
+            ]
         };
-    
+
         let pointsCard : powerbi.visuals.FormattingCard = {
             description: "Data Points",
             displayName: "Data Points",
             uid: "dataPoints_uid",
-            groups: []
+            groups: [
+                {
+                    displayName: "Data Points",
+                    uid: "dataPointsCard_dataPoints_group_uid",
+                    slices: [
+                        {
+                            uid: "dataPointsCard_dataPoints_categoryGradient_uid",
+                            displayName: "Category Gradient",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "dataPoint",
+                                        propertyName: "categoryGradient"
+                                    },
+                                    value: dataPointSettings.categoryGradient
+                                }
+                            }
+                        },
+                        {
+                            uid: "dataPointsCard_dataPoints_colorDistribution_uid",
+                            displayName: "Color Distribution",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "dataPoint",
+                                        propertyName: "colorDistribution"
+                                    },
+                                    value: dataPointSettings.colorDistribution
+                                }
+                            }
+                        },
+                        {
+                            uid: "dataPointsCard_dataPoints_endGradient_uid",
+                            displayName: "End Color of Gradient",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "dataPoint",
+                                        propertyName: "colorGradientEndColor"
+                                    },
+                                    value: {value: dataPointSettings.colorGradientEndColor}
+                                }
+                            }
+                        },
+                        {
+                            uid: "dataPointsCard_dataPoints_defaultColor_uid",
+                            displayName: "Default Color",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "dataPoint",
+                                        propertyName: "defaultColor"
+                                    },
+                                    value: {value: defaultDataPointColor}
+                                }
+                            }
+                        },
+                        {
+                            uid: "dataPointsCard_dataPoints_showAllDataPoints_uid",
+                            displayName: "Show All Data Points",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "dataPoint",
+                                        propertyName: "showAllDataPoints"
+                                    },
+                                    value: showAllDataPoints
+                                }
+                            }
+                        },
+                    ]
+                }
+            ]
         };
     
         let categoriesCard : powerbi.visuals.FormattingCard = {
@@ -1559,7 +1676,10 @@ export class MekkoChart implements IVisual {
         const formattingModel: powerbi.visuals.FormattingModel = { cards: [
             columnBorderCard,
             legendCard,
-            seriesCard
+            labelsCard,
+            seriesCard,
+            axisCard,
+            pointsCard
         ]};
         return formattingModel;
     }
@@ -2950,3 +3070,5 @@ export function createLayers(
 
     return layers;
 }
+
+
