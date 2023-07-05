@@ -1425,7 +1425,6 @@ export class MekkoChart implements IVisual {
                                         propertyName: "enabled"
                                     },
                                     value: legendSortSettings.enabled
-                                    //value: false
                                 }
                             }
                         },
@@ -1442,7 +1441,35 @@ export class MekkoChart implements IVisual {
                                     value: legendSortSettings.direction
                                 }
                             }
-                        }
+                        },
+                        {
+                            uid: "legendCard_sortLegend_groupbyCategory_uid",
+                            displayName: "Group By Category",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortLegend",
+                                        propertyName: "groupByCategory"
+                                    },
+                                    value: legendSortSettings.groupByCategory
+                                }
+                            }
+                        },
+                        {
+                            uid: "legendCard_sortLegend_groupDirection_uid",
+                            displayName: "Group Sort Direction",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.Dropdown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortLegend",
+                                        propertyName: "groupByCategoryDirection"
+                                    },
+                                    value: legendSortSettings.groupByCategoryDirection
+                                }
+                            }
+                        },
                     ]
                 }
             ]
