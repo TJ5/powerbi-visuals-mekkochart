@@ -1275,6 +1275,8 @@ export class MekkoChart implements IVisual {
             legendPosition.top);
 
         let legendSortSettings: MekkoLegendSortSettings = (<BaseColumnChart>this.layers[0]).getLegendSortSettings();
+        let seriesSortSettings: MekkoSeriesSortSettings = (<BaseColumnChart>this.layers[0]).getSeriesSortSettings();
+
 
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
@@ -1479,7 +1481,56 @@ export class MekkoChart implements IVisual {
             description: "Series",
             displayName: "Series",
             uid: "series_uid",
-            groups: []
+            groups: [
+                {
+                    displayName: "Series Sort",
+                    uid: "seriesCard_sortSeries_group_uid",
+                    slices: [
+                        {
+                            uid: "seriesCard_sortSeries_enable_uid",
+                            displayName: "Enabled",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortSeries",
+                                        propertyName: "enabled"
+                                    },
+                                    value: seriesSortSettings.enabled
+                                }
+                            }
+                        },
+                        {
+                            uid: "seriesCard_sortSeries_direction_uid",
+                            displayName: "Direction",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.Dropdown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortSeries",
+                                        propertyName: "direction"
+                                    },
+                                    value: seriesSortSettings.direction
+                                }
+                            }
+                        },
+                        {
+                            uid: "seriesCard_sortSeries_displayPercents_uid",
+                            displayName: "Display Percents",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.Dropdown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortSeries",
+                                        propertyName: "displayPercents"
+                                    },
+                                    value: seriesSortSettings.displayPercents
+                                }
+                            }
+                        },
+                    ]
+                }
+            ]
         };
     
         let axisCard : powerbi.visuals.FormattingCard = {
@@ -1507,7 +1558,8 @@ export class MekkoChart implements IVisual {
         
         const formattingModel: powerbi.visuals.FormattingModel = { cards: [
             columnBorderCard,
-            legendCard
+            legendCard,
+            seriesCard
         ]};
         return formattingModel;
     }
