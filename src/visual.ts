@@ -1429,6 +1429,20 @@ export class MekkoChart implements IVisual {
                                 }
                             }
                         },
+                        {
+                            uid: "legendCard_sortLegend_direction_uid",
+                            displayName: "Direction",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.Dropdown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortLegend",
+                                        propertyName: "direction"
+                                    },
+                                    value: legendSortSettings.direction
+                                }
+                            }
+                        }
                     ]
                 }
             ]
