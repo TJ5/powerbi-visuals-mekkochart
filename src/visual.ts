@@ -1230,6 +1230,7 @@ export class MekkoChart implements IVisual {
         if (borderWidth === undefined) {
             borderWidth = 1;
         }
+
         let legendShow: boolean,
             legendShowTitle: boolean,
             legendTitleText: string,
@@ -1278,7 +1279,9 @@ export class MekkoChart implements IVisual {
         if (showCategoryAxis === undefined) {
             showCategoryAxis = true
         }
-        
+        if (labelSettings.labelColor === undefined) {
+            labelSettings.labelColor = "white";
+        }
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1357,7 +1360,38 @@ export class MekkoChart implements IVisual {
                                     value: labelSettings.show
                                 }
                             }
-                        }
+                        },
+                        {
+                            displayName: "Color",
+                            uid: "labelsCard_labels_color_uid",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "labels",
+                                        propertyName: "color"
+                                    },
+                                    value: {value: labelSettings.labelColor}
+                                }
+                            }
+                        },
+                        /*
+                        {
+                            displayName: "Units",
+                            uid: "labelsCard_labels_units_uid",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ConditionalFormattingControl,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "labels",
+                                        propertyName: "labelDisplayUnits"
+                                    },
+                                    value: labelSettings.
+                                }
+                            }
+                        },
+                        */
+                        
                     ]
                 }
             ]
