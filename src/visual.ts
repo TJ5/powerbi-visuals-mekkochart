@@ -1279,6 +1279,7 @@ export class MekkoChart implements IVisual {
         let defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
         let labelSettings: VisualDataLabelsSettings = (<BaseColumnChart>this.layers[0]).getData().labelSettings;
 
+        var xAxisRotationEnabled : boolean = xAxisLabelsSettings.enableRotataion;
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1569,9 +1570,9 @@ export class MekkoChart implements IVisual {
                                 properties: {
                                     descriptor: {
                                         objectName: "xAxisLabels",
-                                        propertyName: "enabled"
+                                        propertyName: "enableRotataion"
                                     },
-                                    value: xAxisLabelsSettings.enableRotataion
+                                    value: xAxisRotationEnabled
                                 }
                             }
                         },
