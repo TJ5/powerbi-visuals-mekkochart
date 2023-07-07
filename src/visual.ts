@@ -1217,25 +1217,19 @@ export class MekkoChart implements IVisual {
 
     public getFormattingModel(): powerbi.visuals.FormattingModel  {
 
-        const borderObjects: powerbi.DataViewObjects = {
-            columnBorder: this.borderObjectProperties
-        };
-        
-        const borderShow: boolean = dataViewObjects.getValue(
-            borderObjects,
-            MekkoChart.Properties["columnBorder"]["show"],
-            MekkoChart.DefaultSettings.columnBorder.show);
+        let borderShow: boolean = <boolean>(this.borderObjectProperties["show"]);
+        let borderColor: string = <string>(this.borderObjectProperties["color"]);
+        let borderWidth: number = <number>(this.borderObjectProperties["width"]);
 
-        const borderColor: string = dataViewObjects.getFillColor(
-            borderObjects,
-            MekkoChart.Properties["columnBorder"]["color"],
-            MekkoChart.DefaultSettings.columnBorder.color);
-    
-        const borderWidth: number = dataViewObjects.getValue(
-            borderObjects,
-            MekkoChart.Properties["columnBorder"]["width"],
-            MekkoChart.DefaultSettings.columnBorder.width);
-
+        if (borderShow === undefined) {
+            borderShow = true;
+        }
+        if (borderColor === undefined) {
+            borderColor = "white";
+        }
+        if (borderWidth === undefined) {
+            borderWidth = 1;
+        }
         let legendShow: boolean,
             legendShowTitle: boolean,
             legendTitleText: string,
