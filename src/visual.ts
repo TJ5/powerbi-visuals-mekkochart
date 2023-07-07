@@ -1375,23 +1375,20 @@ export class MekkoChart implements IVisual {
                                 }
                             }
                         },
-                        /*
                         {
-                            displayName: "Units",
-                            uid: "labelsCard_labels_units_uid",
+                            displayName: "Precision",
+                            uid: "labelsCard_labels_precision_uid",
                             control: {
-                                type: powerbi.visuals.FormattingComponent.ConditionalFormattingControl,
+                                type: powerbi.visuals.FormattingComponent.NumUpDown,
                                 properties: {
                                     descriptor: {
                                         objectName: "labels",
-                                        propertyName: "labelDisplayUnits"
+                                        propertyName: "labelPrecision"
                                     },
-                                    value: labelSettings.
+                                    value: labelSettings.precision,
                                 }
                             }
                         },
-                        */
-                        
                     ]
                 }
             ]
