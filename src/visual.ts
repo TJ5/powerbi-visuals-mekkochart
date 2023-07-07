@@ -1273,14 +1273,26 @@ export class MekkoChart implements IVisual {
         let showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints;
         let defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
         let labelSettings: VisualDataLabelsSettings = (<BaseColumnChart>this.layers[0]).getData().labelSettings;
-
         let xAxisRotationEnabled : boolean = xAxisLabelsSettings.enableRotataion;
         let showCategoryAxis:boolean = <boolean>(this.categoryAxisProperties["show"]);
+        let showCategoryAxisTitle:boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]);
+        let categoryAxisLabelColor:string = <string>(this.categoryAxisProperties["labelColor"]);
+        let categoryAxisFontSize:number = <number>(this.categoryAxisProperties["fontSzie"]);
+
         if (showCategoryAxis === undefined) {
             showCategoryAxis = true
         }
         if (labelSettings.labelColor === undefined) {
             labelSettings.labelColor = "white";
+        }
+        if (showCategoryAxisTitle === undefined) {
+            showCategoryAxisTitle = true;
+        }
+        if (categoryAxisLabelColor === undefined) {
+            categoryAxisLabelColor = "black";
+        }
+        if (categoryAxisFontSize === undefined) {
+            categoryAxisFontSize = 9;
         }
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
@@ -1623,6 +1635,48 @@ export class MekkoChart implements IVisual {
                                         propertyName: "show"
                                     },
                                     value: showCategoryAxis 
+                                }
+                            }
+                        },
+                        {
+                            uid: "axisCard_xAxis_showTitle_uid",
+                            displayName: "Show Title",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "categoryAxis",
+                                        propertyName: "showAxisTitle"
+                                    },
+                                    value: showCategoryAxisTitle
+                                }
+                            }
+                        },
+                        {
+                            uid: "axisCard_xAxis_labelColor_uid",
+                            displayName: "Label Color",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "categoryAxis",
+                                        propertyName: "labelColor"
+                                    },
+                                    value: {value: categoryAxisLabelColor}
+                                }
+                            }
+                        },
+                        {
+                            uid: "axisCard_xAxis_fontSize_uid",
+                            displayName: "Font Size",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "categoryAxis",
+                                        propertyName: "fontSize"
+                                    },
+                                    value: categoryAxisFontSize
                                 }
                             }
                         }
