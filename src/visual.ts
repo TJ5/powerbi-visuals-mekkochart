@@ -1279,7 +1279,12 @@ export class MekkoChart implements IVisual {
         let defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
         let labelSettings: VisualDataLabelsSettings = (<BaseColumnChart>this.layers[0]).getData().labelSettings;
 
-        var xAxisRotationEnabled : boolean = xAxisLabelsSettings.enableRotataion;
+        let xAxisRotationEnabled : boolean = xAxisLabelsSettings.enableRotataion;
+        let showCategoryAxis:boolean = <boolean>(this.categoryAxisProperties["show"]);
+        if (showCategoryAxis === undefined) {
+            showCategoryAxis = true
+        }
+        
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1576,6 +1581,33 @@ export class MekkoChart implements IVisual {
                                 }
                             }
                         },
+                    ]
+                },
+                {
+                    displayName: "X Axis",
+                    uid: "axisCard_xAxis_group_uid",
+                    slices: [
+                        {
+                            uid: "axisCard_xAxis_show_uid",
+                            displayName: "Show",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "categoryAxis",
+                                        propertyName: "show"
+                                    },
+                                    value: showCategoryAxis 
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    displayName: "Y Axis",
+                    uid: "axisCard_yAxis_group_uid",
+                    slices: [
+                        
                     ]
                 }
             ]
