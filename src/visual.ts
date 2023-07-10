@@ -1289,7 +1289,7 @@ export class MekkoChart implements IVisual {
         const showValueAxisTitle: boolean = <boolean>(this.valueAxisProperties["showAxisTitle"]) ?? true;
         const valueAxisLabelColor: string = <string>(this.valueAxisProperties["labelColor"]) ?? "black";
         const valueAxisFontSize: number = <number>(this.valueAxisProperties["fontSize"]) ?? 9;
-        let valueAxisIntersection: number = <number>(this.valueAxisProperties["intersection"]);
+        const valueAxisIntersection: number = <number>(this.valueAxisProperties["intersection"]);
 
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
@@ -1683,7 +1683,78 @@ export class MekkoChart implements IVisual {
                     displayName: "Y Axis",
                     uid: "axisCard_yAxis_group_uid",
                     slices: [
-                        
+                        {
+                            uid: "axisCard_yAxis_show_uid",
+                            displayName: "Show",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "valueAxis",
+                                        propertyName: "show"
+                                    },
+                                    value: showValueAxis
+                                }
+                            }
+                        },
+                        /*
+                        {
+                            uid: "axisCard_yAxis_intersections_uid",
+                            displayName: "Intersections",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "categoryAxis",
+                                        propertyName: "fontSize"
+                                    },
+                                    value: valueAxisIntersection
+                                }
+                            }
+                        },
+                        */
+                        {
+                            uid: "axisCard_yAxis_showTitle_uid",
+                            displayName: "Show Title",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "valueAxis",
+                                        propertyName: "showAxisTitle"
+                                    },
+                                    value: showValueAxisTitle
+                                }
+                            }
+                        },
+                        {
+                            uid: "axisCard_yAxis_labelColor_uid",
+                            displayName: "Label Color",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "valueAxis",
+                                        propertyName: "labelColor"
+                                    },
+                                    value: {value: valueAxisLabelColor}
+                                }
+                            }
+                        },
+                        {
+                            uid: "axisCard_yAxis_fontSize_uid",
+                            displayName: "Font Size",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "valueAxis",
+                                        propertyName: "fontSize"
+                                    },
+                                    value: valueAxisFontSize
+                                }
+                            }
+                        }
                     ]
                 }
             ]
