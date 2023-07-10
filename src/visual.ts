@@ -1266,50 +1266,31 @@ export class MekkoChart implements IVisual {
             legendProps.position,
             legendPosition.top);
 
-        let legendSortSettings: MekkoLegendSortSettings = (<BaseColumnChart>this.layers[0]).getLegendSortSettings();
-        let seriesSortSettings: MekkoSeriesSortSettings = (<BaseColumnChart>this.layers[0]).getSeriesSortSettings();
-        let xAxisLabelsSettings: MekkoXAxisLabelsSettings = (<BaseColumnChart>this.layers[0]).getXAxisLabelsSettings();
+        const legendSortSettings: MekkoLegendSortSettings = (<BaseColumnChart>this.layers[0]).getLegendSortSettings();
+        const seriesSortSettings: MekkoSeriesSortSettings = (<BaseColumnChart>this.layers[0]).getSeriesSortSettings();
+        const xAxisLabelsSettings: MekkoXAxisLabelsSettings = (<BaseColumnChart>this.layers[0]).getXAxisLabelsSettings();
         
-        let dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
-        let showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints;
-        let defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
+        const dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
+        const showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints ?? false;
+        const defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
         
-        let labelSettings: VisualDataLabelsSettings = (<BaseColumnChart>this.layers[0]).getData().labelSettings;
-        
-        let xAxisRotationEnabled : boolean = xAxisLabelsSettings.enableRotataion;
-        
-        let showCategoryAxis:boolean = <boolean>(this.categoryAxisProperties["show"]);
-        let showCategoryAxisTitle:boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]);
-        let categoryAxisLabelColor:string = <string>(this.categoryAxisProperties["labelColor"]);
-        let categoryAxisFontSize:number = <number>(this.categoryAxisProperties["fontSzie"]);
-        
-        let showValueAxis:boolean = <boolean>(this.valueAxisProperties["show"]);
-        let showValueAxisTitle:boolean = <boolean>(this.valueAxisProperties["showAxisTitle"]);
-        let valueAxisLabelColor:string = <string>(this.valueAxisProperties["labelColor"]);
-        let valueAxisFontSize:number = <number>(this.valueAxisProperties["fontSize"]);
-        let valueAxisIntersection:number = <number>(this.valueAxisProperties["intersection"]);
+        const labelColor: string = (<BaseColumnChart>this.layers[0]).getData().labelSettings.labelColor ?? "white";
+        const showLabels: boolean = (<BaseColumnChart>this.layers[0]).getData().labelSettings.show ?? true;
+        const labelPrecision: number = (<BaseColumnChart>this.layers[0]).getData().labelSettings.precision
 
-        if (showCategoryAxis === undefined) {
-            showCategoryAxis = true
-        }
-        if (labelSettings.labelColor === undefined) {
-            labelSettings.labelColor = "white";
-        }
-        if (showCategoryAxisTitle === undefined) {
-            showCategoryAxisTitle = true;
-        }
-        if (categoryAxisLabelColor === undefined) {
-            categoryAxisLabelColor = "black";
-        }
-        if (valueAxisFontSize === undefined) {
-            valueAxisFontSize = 9;
-        }
-        if (showValueAxis === undefined) {
-            showValueAxis = true;
-        }
-        if (showValueAxisTitle === undefined) {
-            showValueAxisTitle = true;
-        }
+        const xAxisRotationEnabled: boolean = xAxisLabelsSettings.enableRotataion ?? false;
+        
+        const showCategoryAxis: boolean = <boolean>(this.categoryAxisProperties["show"]) ?? true;
+        const showCategoryAxisTitle: boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]) ?? true;
+        const categoryAxisLabelColor: string = <string>(this.categoryAxisProperties["labelColor"]) ?? "black";
+        const categoryAxisFontSize: number = <number>(this.categoryAxisProperties["fontSize"]) ?? 9;
+        
+        const showValueAxis: boolean = <boolean>(this.valueAxisProperties["show"]) ?? true;
+        const showValueAxisTitle: boolean = <boolean>(this.valueAxisProperties["showAxisTitle"]) ?? true;
+        const valueAxisLabelColor: string = <string>(this.valueAxisProperties["labelColor"]) ?? "black";
+        const valueAxisFontSize: number = <number>(this.valueAxisProperties["fontSize"]) ?? 9;
+        let valueAxisIntersection: number = <number>(this.valueAxisProperties["intersection"]);
+
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1385,7 +1366,7 @@ export class MekkoChart implements IVisual {
                                         objectName: "labels",
                                         propertyName: "show"
                                     },
-                                    value: labelSettings.show
+                                    value: showLabels
                                 }
                             }
                         },
@@ -1399,7 +1380,7 @@ export class MekkoChart implements IVisual {
                                         objectName: "labels",
                                         propertyName: "color"
                                     },
-                                    value: {value: labelSettings.labelColor}
+                                    value: {value: labelColor}
                                 }
                             }
                         },
@@ -1413,7 +1394,7 @@ export class MekkoChart implements IVisual {
                                         objectName: "labels",
                                         propertyName: "labelPrecision"
                                     },
-                                    value: labelSettings.precision,
+                                    value: labelPrecision,
                                 }
                             }
                         },
