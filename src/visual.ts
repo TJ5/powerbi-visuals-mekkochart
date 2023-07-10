@@ -1269,15 +1269,25 @@ export class MekkoChart implements IVisual {
         let legendSortSettings: MekkoLegendSortSettings = (<BaseColumnChart>this.layers[0]).getLegendSortSettings();
         let seriesSortSettings: MekkoSeriesSortSettings = (<BaseColumnChart>this.layers[0]).getSeriesSortSettings();
         let xAxisLabelsSettings: MekkoXAxisLabelsSettings = (<BaseColumnChart>this.layers[0]).getXAxisLabelsSettings();
+        
         let dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
         let showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints;
         let defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
+        
         let labelSettings: VisualDataLabelsSettings = (<BaseColumnChart>this.layers[0]).getData().labelSettings;
+        
         let xAxisRotationEnabled : boolean = xAxisLabelsSettings.enableRotataion;
+        
         let showCategoryAxis:boolean = <boolean>(this.categoryAxisProperties["show"]);
         let showCategoryAxisTitle:boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]);
         let categoryAxisLabelColor:string = <string>(this.categoryAxisProperties["labelColor"]);
         let categoryAxisFontSize:number = <number>(this.categoryAxisProperties["fontSzie"]);
+        
+        let showValueAxis:boolean = <boolean>(this.valueAxisProperties["show"]);
+        let showValueAxisTitle:boolean = <boolean>(this.valueAxisProperties["showAxisTitle"]);
+        let valueAxisLabelColor:string = <string>(this.valueAxisProperties["labelColor"]);
+        let valueAxisFontSize:number = <number>(this.valueAxisProperties["fontSize"]);
+        let valueAxisIntersection:number = <number>(this.valueAxisProperties["intersection"]);
 
         if (showCategoryAxis === undefined) {
             showCategoryAxis = true
@@ -1291,8 +1301,14 @@ export class MekkoChart implements IVisual {
         if (categoryAxisLabelColor === undefined) {
             categoryAxisLabelColor = "black";
         }
-        if (categoryAxisFontSize === undefined) {
-            categoryAxisFontSize = 9;
+        if (valueAxisFontSize === undefined) {
+            valueAxisFontSize = 9;
+        }
+        if (showValueAxis === undefined) {
+            showValueAxis = true;
+        }
+        if (showValueAxisTitle === undefined) {
+            showValueAxisTitle = true;
         }
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
