@@ -1910,7 +1910,7 @@ export class MekkoChart implements IVisual {
                                 descriptor: {
                                     objectName: "dataPoint",
                                     propertyName: "fill",
-                                    selector: ColorHelper.normalizeSelector(series.identity.getSelector()),
+                                    selector: ColorHelper.normalizeSelector(series.identity.getSelector(), true),
                                 },
                                 value: {value: series.color}
                             }
