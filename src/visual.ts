@@ -1297,6 +1297,10 @@ export class MekkoChart implements IVisual {
         const valueAxisFontSize: number = <number>(this.valueAxisProperties["fontSize"]) ?? 9;
         const valueAxisIntersection: number = <number>(this.valueAxisProperties["intersection"]);
 
+        const layersLength: number = this.layers
+            ? this.layers.length
+            : 0;
+        
         let columnBorderCard : powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1855,11 +1859,7 @@ export class MekkoChart implements IVisual {
     
         
         if (dataPointSettings.categoryGradient === false) {
-            
             //Loop through each category in each layer
-            const layersLength: number = this.layers
-            ? this.layers.length
-            : 0;
             for (let i: number = 0; i < layersLength; i++) {
                 /*
                 (<BaseColumnChart>this.layers[i]).getData().categories.forEach((category, index) => {
@@ -1918,10 +1918,54 @@ export class MekkoChart implements IVisual {
                     });
                 }
             }
-            
-            
         }
-        
+        else {
+            for (let i: number = 0; i < layersLength; i++) {
+                (<BaseColumnChart>this.layers[i]).getData().categories.forEach((category, index) => {
+                    //Get the MekkoLegendDataPoint object corresponding to the category
+                    let categoryLegends: MekkoLegendDataPoint[] = (<BaseColumnChart>this.layers[i]).getData().legendData.dataPoints.filter(legend => legend.category == category);
+                    //console.log(category + " " + index + " " + categoryLegends[0]);
+                    for (let l of categoryLegends) {
+                        console.log(l.category);
+                    }
+                    console.log("Categories: " + (<BaseColumnChart>this.layers[i]).getData().categories);
+                    if (categoryLegends[0] == undefined) {
+                        return;
+                    }
+                    //Push a menu slice with a color picker to determine the category's start color gradient
+                    pointsCardGroup.slices.push({
+                        uid: `dataPointsCard_dataPoints_${category}Start_uid`,
+                        displayName: `${category} Start`,
+                        control: {
+                            type: powerbi.visuals.FormattingComponent.ColorPicker,
+                            properties: {
+                                descriptor: {
+                                    objectName: "categoryColorStart",
+                                    propertyName: "categoryGradient",
+                                    selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
+                                },
+                                value: {value: categoryLegends[0].categoryStartColor}
+                            }
+                        }
+                    });     
+                    pointsCardGroup.slices.push({
+                        uid: `dataPointsCard_dataPoints_${category}End_uid`,
+                        displayName: `${category} End`,
+                        control: {
+                            type: powerbi.visuals.FormattingComponent.ColorPicker,
+                            properties: {
+                                descriptor: {
+                                    objectName: "categoryColorEnd",
+                                    propertyName: "categoryGradient",
+                                    selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
+                                },
+                                value: {value: categoryLegends[0].categoryEndColor}
+                            }
+                        }
+                    });                
+                });
+            }
+        }
         let categoriesCard : powerbi.visuals.FormattingCard = {
             description: "Categories",
             displayName: "Categories",
