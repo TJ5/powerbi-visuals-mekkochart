@@ -96,6 +96,11 @@ import {
 }
     from "powerbi-visuals-utils-dataviewutils";
 
+import {
+    ColorHelper
+}
+    from "powerbi-visuals-utils-colorutils";
+
 import { max, sum } from "d3-array";
 import { select } from "d3-selection";
 import { brushX, BrushBehavior } from "d3-brush";
@@ -186,6 +191,7 @@ import createBaseColumnChartLayer = columnChartBaseColumnChart.createBaseColumnC
 import isScalar = dataViewUtils.isScalar;
 import getValueAxisProperties = dataViewUtils.getValueAxisProperties;
 import getCategoryAxisProperties = dataViewUtils.getCategoryAxisProperties;
+
 
 export interface MekkoChartProperty {
     [propertyName: string]: DataViewObjectPropertyIdentifier;
@@ -1759,91 +1765,120 @@ export class MekkoChart implements IVisual {
                 }
             ]
         };
-
+        let pointsCardGroup: powerbi.visuals.FormattingGroup = {
+            displayName: "Data Points",
+            uid: "dataPointsCard_dataPoints_group_uid",
+            slices: [
+                {
+                    uid: "dataPointsCard_dataPoints_categoryGradient_uid",
+                    displayName: "Category Gradient",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "dataPoint",
+                                propertyName: "categoryGradient"
+                            },
+                            value: dataPointSettings.categoryGradient
+                        }
+                    }
+                },
+                /*
+                {
+                    uid: "dataPointsCard_dataPoints_colorDistribution_uid",
+                    displayName: "Color Distribution",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "dataPoint",
+                                propertyName: "colorDistribution"
+                            },
+                            value: dataPointSettings.colorDistribution
+                        }
+                    }
+                },
+                {
+                    uid: "dataPointsCard_dataPoints_endGradient_uid",
+                    displayName: "End Color of Gradient",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ColorPicker,
+                        properties: {
+                            descriptor: {
+                                objectName: "dataPoint",
+                                propertyName: "colorGradientEndColor"
+                            },
+                            value: {value: dataPointSettings.colorGradientEndColor}
+                        }
+                    }
+                },
+                {
+                    uid: "dataPointsCard_dataPoints_defaultColor_uid",
+                    displayName: "Default Color",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ColorPicker,
+                        properties: {
+                            descriptor: {
+                                objectName: "dataPoint",
+                                propertyName: "defaultColor"
+                            },
+                            value: {value: defaultDataPointColor}
+                        }
+                    }
+                },
+                */
+                {
+                    uid: "dataPointsCard_dataPoints_showAllDataPoints_uid",
+                    displayName: "Show All Data Points",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "dataPoint",
+                                propertyName: "showAllDataPoints"
+                            },
+                            value: showAllDataPoints
+                        }
+                    }
+                },
+            ]
+        }
+        
         let pointsCard : powerbi.visuals.FormattingCard = {
             description: "Data Points",
             displayName: "Data Points",
             uid: "dataPoints_uid",
             groups: [
-                {
-                    displayName: "Data Points",
-                    uid: "dataPointsCard_dataPoints_group_uid",
-                    slices: [
-                        {
-                            uid: "dataPointsCard_dataPoints_categoryGradient_uid",
-                            displayName: "Category Gradient",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "dataPoint",
-                                        propertyName: "categoryGradient"
-                                    },
-                                    value: dataPointSettings.categoryGradient
-                                }
-                            }
-                        },
-                        {
-                            uid: "dataPointsCard_dataPoints_colorDistribution_uid",
-                            displayName: "Color Distribution",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "dataPoint",
-                                        propertyName: "colorDistribution"
-                                    },
-                                    value: dataPointSettings.colorDistribution
-                                }
-                            }
-                        },
-                        {
-                            uid: "dataPointsCard_dataPoints_endGradient_uid",
-                            displayName: "End Color of Gradient",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ColorPicker,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "dataPoint",
-                                        propertyName: "colorGradientEndColor"
-                                    },
-                                    value: {value: dataPointSettings.colorGradientEndColor}
-                                }
-                            }
-                        },
-                        {
-                            uid: "dataPointsCard_dataPoints_defaultColor_uid",
-                            displayName: "Default Color",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ColorPicker,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "dataPoint",
-                                        propertyName: "defaultColor"
-                                    },
-                                    value: {value: defaultDataPointColor}
-                                }
-                            }
-                        },
-                        {
-                            uid: "dataPointsCard_dataPoints_showAllDataPoints_uid",
-                            displayName: "Show All Data Points",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "dataPoint",
-                                        propertyName: "showAllDataPoints"
-                                    },
-                                    value: showAllDataPoints
-                                }
-                            }
-                        },
-                    ]
-                }
+                pointsCardGroup
             ]
         };
     
+        
+        if (dataPointSettings.categoryGradient) {
+            //Loop through each category
+            (<BaseColumnChart>this.layers[0]).getData().categories.forEach((category, index) => {
+                //Get the MekkoLegendDataPoint object corresponding to the category
+                let categoryLegends: MekkoLegendDataPoint[] = (<BaseColumnChart>this.layers[0]).getData().legendData.dataPoints.filter(legend => legend.category == category);
+                
+                //Push a menu slice with a color picker to determine the category's start color gradient
+                pointsCardGroup.slices.push({
+                    uid: `dataPointsCard_dataPoints_${category}_uid`,
+                    displayName: `${category} color`,
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ColorPicker,
+                        properties: {
+                            descriptor: {
+                                objectName: "categoryColorStart",
+                                propertyName: "categoryGradient",
+                                selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
+                            },
+                            value: {value: categoryLegends[0].categoryStartColor}
+                        }
+                    }
+                });                
+            });
+        }
+        
         let categoriesCard : powerbi.visuals.FormattingCard = {
             description: "Categories",
             displayName: "Categories",
