@@ -1854,12 +1854,14 @@ export class MekkoChart implements IVisual {
         };
     
         
-        if (dataPointSettings.categoryGradient) {
+        if (dataPointSettings.categoryGradient === false) {
+            
             //Loop through each category in each layer
             const layersLength: number = this.layers
             ? this.layers.length
             : 0;
             for (let i: number = 0; i < layersLength; i++) {
+                /*
                 (<BaseColumnChart>this.layers[i]).getData().categories.forEach((category, index) => {
                     //Get the MekkoLegendDataPoint object corresponding to the category
                     let categoryLegends: MekkoLegendDataPoint[] = (<BaseColumnChart>this.layers[i]).getData().legendData.dataPoints.filter(legend => legend.category == category);
@@ -1897,7 +1899,27 @@ export class MekkoChart implements IVisual {
                         }
                     });                
                 });
+                */
+                for (let series of (<BaseColumnChart>this.layers[i]).getData().series) {
+                    pointsCardGroup.slices.push({
+                        uid: `dataPointsCard_dataPoints_${series.displayName}Color_uid`,
+                        displayName: `${series.displayName} Color`,
+                        control: {
+                            type: powerbi.visuals.FormattingComponent.ColorPicker,
+                            properties: {
+                                descriptor: {
+                                    objectName: "dataPoint",
+                                    propertyName: "fill",
+                                    selector: ColorHelper.normalizeSelector(series.identity.getSelector()),
+                                },
+                                value: {value: series.color}
+                            }
+                        }
+                    });
+                }
             }
+            
+            
         }
         
         let categoriesCard : powerbi.visuals.FormattingCard = {
