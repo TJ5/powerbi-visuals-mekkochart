@@ -1769,24 +1769,24 @@ export class MekkoChart implements IVisual {
                 }
             ]
         };
+        let showGradientSlice: powerbi.visuals.FormattingSlice = {
+            uid: "dataPointsCard_dataPoints_categoryGradient_uid",
+            displayName: "Category Gradient",
+            control: {
+                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                properties: {
+                    descriptor: {
+                        objectName: "dataPoint",
+                        propertyName: "categoryGradient"
+                    },
+                    value: dataPointSettings.categoryGradient
+                }
+            }
+        };
         let pointsCardGroup: powerbi.visuals.FormattingGroup = {
             displayName: "Data Points",
             uid: "dataPointsCard_dataPoints_group_uid",
             slices: [
-                {
-                    uid: "dataPointsCard_dataPoints_categoryGradient_uid",
-                    displayName: "Category Gradient",
-                    control: {
-                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                        properties: {
-                            descriptor: {
-                                objectName: "dataPoint",
-                                propertyName: "categoryGradient"
-                            },
-                            value: dataPointSettings.categoryGradient
-                        }
-                    }
-                },
                 /*
                 {
                     uid: "dataPointsCard_dataPoints_colorDistribution_uid",
@@ -1847,7 +1847,9 @@ export class MekkoChart implements IVisual {
                 },
             ]
         }
-        
+        if ((<BaseColumnChart>this.layers[0]).checkDataToFeatures()) {
+            pointsCardGroup.slices.push(showGradientSlice);
+        }
         let pointsCard : powerbi.visuals.FormattingCard = {
             description: "Data Points",
             displayName: "Data Points",

@@ -1437,7 +1437,7 @@ export class BaseColumnChart implements IColumnChart {
         return this.data;
     }
 
-    private checkDataToFeatures(): boolean {
+    public checkDataToFeatures(): boolean {
         return !this.data.legendData.dataPoints.some((value: MekkoLegendDataPoint) => {
             return value.categoryValues.filter(value => value).length > 1;
         });
