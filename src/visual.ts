@@ -117,6 +117,7 @@ import {
     legendData as LegendData,
     legend,
     legendPosition,
+    axis,
 } from "powerbi-visuals-utils-chartutils";
 
 import IAxisProperties = axisInterfaces.IAxisProperties;
@@ -1221,554 +1222,16 @@ export class MekkoChart implements IVisual {
         instances.push(instance);
     }
 
-    public getFormattingModel(): powerbi.visuals.FormattingModel  {
-
-        let borderShow: boolean = <boolean>(this.borderObjectProperties["show"]);
-        let borderColor: string = <string>(this.borderObjectProperties["color"]);
-        let borderWidth: number = <number>(this.borderObjectProperties["width"]);
-
-        if (borderShow === undefined) {
-            borderShow = true;
-        }
-        if (borderColor === undefined) {
-            borderColor = "white";
-        }
-        if (borderWidth === undefined) {
-            borderWidth = 1;
-        }
-
-        let legendShow: boolean,
-            legendShowTitle: boolean,
-            legendTitleText: string,
-            legendFontSize: number,
-            legendPos: string;
-            
-        legendShow = dataViewObject.getValue<boolean>(
-            this.legendObjectProperties,
-            legendProps.show,
-            this.legend.isVisible());
-
-        legendShowTitle = dataViewObject.getValue<boolean>(
-            this.legendObjectProperties,
-            legendProps.showTitle,
-            true);
-
-        legendTitleText = dataViewObject.getValue<string>(
-            this.legendObjectProperties,
-            legendProps.titleText,
-            this.layerLegendData && this.layerLegendData.title
-                ? this.layerLegendData.title
-                : "");
-
-        legendFontSize = dataViewObject.getValue<number>(
-            this.legendObjectProperties,
-            legendProps.fontSize,
-            this.layerLegendData && this.layerLegendData.fontSize
-                ? this.layerLegendData.fontSize
-                : MekkoChart.DefaultLabelFontSizeInPt);
-
-        legendPos = dataViewObject.getValue<string>(
-            this.legendObjectProperties,
-            legendProps.position,
-            legendPosition.top);
-
-        const legendSortSettings: MekkoLegendSortSettings = (<BaseColumnChart>this.layers[0]).getLegendSortSettings();
-        const seriesSortSettings: MekkoSeriesSortSettings = (<BaseColumnChart>this.layers[0]).getSeriesSortSettings();
-        const xAxisLabelsSettings: MekkoXAxisLabelsSettings = (<BaseColumnChart>this.layers[0]).getXAxisLabelsSettings();
-        
+    public getFormattingModel(): powerbi.visuals.FormattingModel  {        
         const dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
         const showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints ?? false;
         const defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
         
-        const labelColor: string = (<BaseColumnChart>this.layers[0]).getData().labelSettings.labelColor ?? "white";
-        const showLabels: boolean = (<BaseColumnChart>this.layers[0]).getData().labelSettings.show ?? true;
-        const labelPrecision: number = (<BaseColumnChart>this.layers[0]).getData().labelSettings.precision
-
-        const xAxisRotationEnabled: boolean = xAxisLabelsSettings.enableRotataion ?? false;
-        
-        const showCategoryAxis: boolean = <boolean>(this.categoryAxisProperties["show"]) ?? true;
-        const showCategoryAxisTitle: boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]) ?? true;
-        const categoryAxisLabelColor: string = <string>(this.categoryAxisProperties["labelColor"]) ?? "black";
-        const categoryAxisFontSize: number = <number>(this.categoryAxisProperties["fontSize"]) ?? 9;
-        
-        const showValueAxis: boolean = <boolean>(this.valueAxisProperties["show"]) ?? true;
-        const showValueAxisTitle: boolean = <boolean>(this.valueAxisProperties["showAxisTitle"]) ?? true;
-        const valueAxisLabelColor: string = <string>(this.valueAxisProperties["labelColor"]) ?? "black";
-        const valueAxisFontSize: number = <number>(this.valueAxisProperties["fontSize"]) ?? 9;
-        const valueAxisIntersection: number = <number>(this.valueAxisProperties["intersection"]);
-
         const layersLength: number = this.layers
             ? this.layers.length
             : 0;
         
-        let columnBorderCard : powerbi.visuals.FormattingCard = {
-            description: "Column Border",
-            displayName: "Column Border",
-            uid: "columnBorder_uid",
-            groups: [
-                {
-                    displayName: "Column Border Group",
-                    uid: "columnBorderCard_columnBorder_group_uid",
-                    slices : [
-                        {
-                            uid: "columnBorderCard_columnBorder_show_uid",
-                            displayName: "Show",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "columnBorder",
-                                        propertyName: "show"
-                                    },
-                                    value: borderShow
-                                }
-                            }
-                        },
-                        {
-                            uid: "columnBorderCard_columnBorder_color_uid",
-                            displayName: "Color",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ColorPicker,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "columnBorder",
-                                        propertyName: "color"
-                                    },
-                                    value: {value: borderColor}
-                                }
-                            }
-                        },
-                        {
-                            uid: "columnBorderCard_columnBorder_width_uid",
-                            displayName: "Width",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.Slider,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "columnBorder",
-                                        propertyName: "width"
-                                    },
-                                    value: borderWidth
-                                }
-                            }
-                        }
-                    ]
-                }
-            ]
-        };
-    
-        let labelsCard : powerbi.visuals.FormattingCard = {
-            description: "Labels",
-            displayName: "Labels",
-            uid: "labels_uid",
-            groups: [
-                {
-                    displayName: "Labels",
-                    uid: "labelsCard_labels_group_uid",
-                    slices: [
-                        {
-                            displayName: "Show",
-                            uid: "labelsCard_labels_show_uid",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "labels",
-                                        propertyName: "show"
-                                    },
-                                    value: showLabels
-                                }
-                            }
-                        },
-                        {
-                            displayName: "Color",
-                            uid: "labelsCard_labels_color_uid",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ColorPicker,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "labels",
-                                        propertyName: "color"
-                                    },
-                                    value: {value: labelColor}
-                                }
-                            }
-                        },
-                        {
-                            displayName: "Precision",
-                            uid: "labelsCard_labels_precision_uid",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.NumUpDown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "labels",
-                                        propertyName: "labelPrecision"
-                                    },
-                                    value: labelPrecision,
-                                }
-                            }
-                        },
-                    ]
-                }
-            ]
-        };
-    
-        let legendCard : powerbi.visuals.FormattingCard = {
-            description: "Legend",
-            displayName: "Legend",
-            uid: "legend_uid",
-            groups: [
-                {
-                    displayName: "Legend",
-                    uid: "legendCard_legend_group_uid",
-                    slices: [
-                        {
-                            uid: "legendCard_legend_show_uid",
-                            displayName: "Show",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "legend",
-                                        propertyName: "show"
-                                    },
-                                    value: legendShow
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_legend_showTitle_uid",
-                            displayName: "Show Title",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "legend",
-                                        propertyName: "showTitle"
-                                    },
-                                    value: legendShowTitle
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_legend_titleText_uid",
-                            displayName: "Title Text",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.TextInput,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "legend",
-                                        propertyName: "titleText"
-                                    },
-                                    value: legendTitleText,   
-                                    placeholder: "Title Text",
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_legend_titleTextSize_uid",
-                            displayName: "Text Size",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.NumUpDown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "legend",
-                                        propertyName: "fontSize"
-                                    },
-                                    value: legendFontSize
-                                }
-                            }
-                        },
-                    ]
-                },
-                {
-                    displayName: "Sort Legend",
-                    uid: "legendCard_sortLegend_group_uid",
-                    slices: [
-                        {
-                            uid: "legendCard_sortLegend_enable_uid",
-                            displayName: "Enabled",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "sortLegend",
-                                        propertyName: "enabled"
-                                    },
-                                    value: legendSortSettings.enabled
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_sortLegend_direction_uid",
-                            displayName: "Direction",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.Dropdown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "sortLegend",
-                                        propertyName: "direction"
-                                    },
-                                    value: legendSortSettings.direction
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_sortLegend_groupbyCategory_uid",
-                            displayName: "Group By Category",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "sortLegend",
-                                        propertyName: "groupByCategory"
-                                    },
-                                    value: legendSortSettings.groupByCategory
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_sortLegend_groupDirection_uid",
-                            displayName: "Group Sort Direction",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.Dropdown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "sortLegend",
-                                        propertyName: "groupByCategoryDirection"
-                                    },
-                                    value: legendSortSettings.groupByCategoryDirection
-                                }
-                            }
-                        },
-                    ]
-                }
-            ]
-        };
-    
-        let seriesCard : powerbi.visuals.FormattingCard = {
-            description: "Series",
-            displayName: "Series",
-            uid: "series_uid",
-            groups: [
-                {
-                    displayName: "Series Sort",
-                    uid: "seriesCard_sortSeries_group_uid",
-                    slices: [
-                        {
-                            uid: "seriesCard_sortSeries_enable_uid",
-                            displayName: "Enabled",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "sortSeries",
-                                        propertyName: "enabled"
-                                    },
-                                    value: seriesSortSettings.enabled
-                                }
-                            }
-                        },
-                        {
-                            uid: "seriesCard_sortSeries_direction_uid",
-                            displayName: "Direction",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.Dropdown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "sortSeries",
-                                        propertyName: "direction"
-                                    },
-                                    value: seriesSortSettings.direction
-                                }
-                            }
-                        },
-                        {
-                            uid: "seriesCard_sortSeries_displayPercents_uid",
-                            displayName: "Display Percents",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.Dropdown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "sortSeries",
-                                        propertyName: "displayPercents"
-                                    },
-                                    value: seriesSortSettings.displayPercents
-                                }
-                            }
-                        },
-                    ]
-                }
-            ]
-        };
         
-        let axisCard : powerbi.visuals.FormattingCard = {
-            description: "Axis",
-            displayName: "Axis",
-            uid: "axis_uid",
-            groups: [
-                {
-                    displayName: "Axis Labels",
-                    uid: "axisCard_axisLabels_group_uid",
-                    slices: [
-                        {
-                            uid: "axisCard_axisLabels_enable_uid",
-                            displayName: "Enable Rotation",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "xAxisLabels",
-                                        propertyName: "enableRotataion"
-                                    },
-                                    value: xAxisRotationEnabled
-                                }
-                            }
-                        },
-                    ]
-                },
-                {
-                    displayName: "X Axis",
-                    uid: "axisCard_xAxis_group_uid",
-                    slices: [
-                        {
-                            uid: "axisCard_xAxis_show_uid",
-                            displayName: "Show",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "categoryAxis",
-                                        propertyName: "show"
-                                    },
-                                    value: showCategoryAxis 
-                                }
-                            }
-                        },
-                        {
-                            uid: "axisCard_xAxis_showTitle_uid",
-                            displayName: "Show Title",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "categoryAxis",
-                                        propertyName: "showAxisTitle"
-                                    },
-                                    value: showCategoryAxisTitle
-                                }
-                            }
-                        },
-                        {
-                            uid: "axisCard_xAxis_labelColor_uid",
-                            displayName: "Label Color",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ColorPicker,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "categoryAxis",
-                                        propertyName: "labelColor"
-                                    },
-                                    value: {value: categoryAxisLabelColor}
-                                }
-                            }
-                        },
-                        {
-                            uid: "axisCard_xAxis_fontSize_uid",
-                            displayName: "Font Size",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.NumUpDown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "categoryAxis",
-                                        propertyName: "fontSize"
-                                    },
-                                    value: categoryAxisFontSize
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    displayName: "Y Axis",
-                    uid: "axisCard_yAxis_group_uid",
-                    slices: [
-                        {
-                            uid: "axisCard_yAxis_show_uid",
-                            displayName: "Show",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "valueAxis",
-                                        propertyName: "show"
-                                    },
-                                    value: showValueAxis
-                                }
-                            }
-                        },
-                        /*
-                        {
-                            uid: "axisCard_yAxis_intersections_uid",
-                            displayName: "Intersections",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.NumUpDown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "categoryAxis",
-                                        propertyName: "fontSize"
-                                    },
-                                    value: valueAxisIntersection
-                                }
-                            }
-                        },
-                        */
-                        {
-                            uid: "axisCard_yAxis_showTitle_uid",
-                            displayName: "Show Title",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "valueAxis",
-                                        propertyName: "showAxisTitle"
-                                    },
-                                    value: showValueAxisTitle
-                                }
-                            }
-                        },
-                        {
-                            uid: "axisCard_yAxis_labelColor_uid",
-                            displayName: "Label Color",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ColorPicker,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "valueAxis",
-                                        propertyName: "labelColor"
-                                    },
-                                    value: {value: valueAxisLabelColor}
-                                }
-                            }
-                        },
-                        {
-                            uid: "axisCard_yAxis_fontSize_uid",
-                            displayName: "Font Size",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.NumUpDown,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "valueAxis",
-                                        propertyName: "fontSize"
-                                    },
-                                    value: valueAxisFontSize
-                                }
-                            }
-                        }
-                    ]
-                }
-            ]
-        };
         let showGradientSlice: powerbi.visuals.FormattingSlice = {
             uid: "dataPointsCard_dataPoints_categoryGradient_uid",
             displayName: "Category Gradient",
@@ -1968,24 +1431,529 @@ export class MekkoChart implements IVisual {
                 });
             }
         }
-        let categoriesCard : powerbi.visuals.FormattingCard = {
-            description: "Categories",
-            displayName: "Categories",
-            uid: "categories_uid",
-            groups: []
-        };
-        
-        //Create Column Border Group
         
         const formattingModel: powerbi.visuals.FormattingModel = { cards: [
-            columnBorderCard,
-            legendCard,
-            labelsCard,
-            seriesCard,
-            axisCard,
+            this.getColumnBorderFormattingCard(),
+            this.getLegendFormattingCard(),
+            this.getLabelsFormattingCard(),
+            this.getSeriesFormattingCard(),
+            this.getAxisFormattingCard(),
             pointsCard
         ]};
         return formattingModel;
+    }
+
+    private getColumnBorderFormattingCard(): powerbi.visuals.FormattingCard {
+        let borderShow: boolean = <boolean>(this.borderObjectProperties["show"]) ?? true;
+        let borderColor: string = <string>(this.borderObjectProperties["color"]) ?? "white";
+        let borderWidth: number = <number>(this.borderObjectProperties["width"]) ?? 1;
+        let columnBorderCard : powerbi.visuals.FormattingCard = {
+            description: "Column Border",
+            displayName: "Column Border",
+            uid: "columnBorder_uid",
+            groups: [
+                {
+                    displayName: "Column Border Group",
+                    uid: "columnBorderCard_columnBorder_group_uid",
+                    slices : [
+                        {
+                            uid: "columnBorderCard_columnBorder_show_uid",
+                            displayName: "Show",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "columnBorder",
+                                        propertyName: "show"
+                                    },
+                                    value: borderShow
+                                }
+                            }
+                        },
+                        {
+                            uid: "columnBorderCard_columnBorder_color_uid",
+                            displayName: "Color",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "columnBorder",
+                                        propertyName: "color"
+                                    },
+                                    value: {value: borderColor}
+                                }
+                            }
+                        },
+                        {
+                            uid: "columnBorderCard_columnBorder_width_uid",
+                            displayName: "Width",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.Slider,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "columnBorder",
+                                        propertyName: "width"
+                                    },
+                                    value: borderWidth
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        };
+        return columnBorderCard;
+    }
+
+    private getLegendFormattingCard(): powerbi.visuals.FormattingCard {
+        let legendShow: boolean = <boolean>this.legendObjectProperties.show ?? true;
+        let legendShowTitle: boolean = <boolean>this.legendObjectProperties.showTitle ?? true;
+        let legendTitleText: string = <string>this.legendObjectProperties.titleText ?? 
+            (this.layerLegendData && this.layerLegendData.title ? this.layerLegendData.title : "");
+        let legendFontSize: number = <number>this.legendObjectProperties.fontSize ?? 
+            (this.layerLegendData && this.layerLegendData.fontSize ? this.layerLegendData.fontSize 
+            : MekkoChart.DefaultLabelFontSizeInPt);
+       
+        let legendCard : powerbi.visuals.FormattingCard = {
+            description: "Legend",
+            displayName: "Legend",
+            uid: "legend_uid",
+            groups: [
+                {
+                    displayName: "Legend",
+                    uid: "legendCard_legend_group_uid",
+                    slices: [
+                        {
+                            uid: "legendCard_legend_show_uid",
+                            displayName: "Show",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "legend",
+                                        propertyName: "show"
+                                    },
+                                    value: legendShow
+                                }
+                            }
+                        },
+                        {
+                            uid: "legendCard_legend_showTitle_uid",
+                            displayName: "Show Title",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "legend",
+                                        propertyName: "showTitle"
+                                    },
+                                    value: legendShowTitle
+                                }
+                            }
+                        },
+                        {
+                            uid: "legendCard_legend_titleText_uid",
+                            displayName: "Title Text",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.TextInput,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "legend",
+                                        propertyName: "titleText"
+                                    },
+                                    value: legendTitleText,   
+                                    placeholder: "Title Text",
+                                }
+                            }
+                        },
+                        {
+                            uid: "legendCard_legend_titleTextSize_uid",
+                            displayName: "Text Size",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "legend",
+                                        propertyName: "fontSize"
+                                    },
+                                    value: legendFontSize
+                                }
+                            }
+                        },
+                    ]
+                }
+            ]
+        };
+        legendCard.groups.push(this.getSortLegendFormattingGroup());
+        return legendCard;
+    }
+
+    private getSortLegendFormattingGroup(): powerbi.visuals.FormattingGroup {
+        const legendSortSettings: MekkoLegendSortSettings = (<BaseColumnChart>this.layers[0]).getLegendSortSettings();
+        let sortLegendGroup: powerbi.visuals.FormattingGroup = {
+            displayName: "Sort Legend",
+            uid: "legendCard_sortLegend_group_uid",
+            slices: [
+                {
+                    uid: "legendCard_sortLegend_enable_uid",
+                    displayName: "Enabled",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "sortLegend",
+                                propertyName: "enabled"
+                            },
+                            value: legendSortSettings.enabled
+                        }
+                    }
+                },
+                {
+                    uid: "legendCard_sortLegend_direction_uid",
+                    displayName: "Direction",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.Dropdown,
+                        properties: {
+                            descriptor: {
+                                objectName: "sortLegend",
+                                propertyName: "direction"
+                            },
+                            value: legendSortSettings.direction
+                        }
+                    }
+                },
+                {
+                    uid: "legendCard_sortLegend_groupbyCategory_uid",
+                    displayName: "Group By Category",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "sortLegend",
+                                propertyName: "groupByCategory"
+                            },
+                            value: legendSortSettings.groupByCategory
+                        }
+                    }
+                },
+                {
+                    uid: "legendCard_sortLegend_groupDirection_uid",
+                    displayName: "Group Sort Direction",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.Dropdown,
+                        properties: {
+                            descriptor: {
+                                objectName: "sortLegend",
+                                propertyName: "groupByCategoryDirection"
+                            },
+                            value: legendSortSettings.groupByCategoryDirection
+                        }
+                    }
+                },
+            ]
+        }
+        return sortLegendGroup;
+    }
+
+    private getLabelsFormattingCard(): powerbi.visuals.FormattingCard {
+        const labelColor: string = (<BaseColumnChart>this.layers[0]).getData().labelSettings.labelColor ?? "white";
+        const showLabels: boolean = (<BaseColumnChart>this.layers[0]).getData().labelSettings.show ?? true;
+        const labelPrecision: number = (<BaseColumnChart>this.layers[0]).getData().labelSettings.precision;
+
+        let labelsCard : powerbi.visuals.FormattingCard = {
+            description: "Labels",
+            displayName: "Labels",
+            uid: "labels_uid",
+            groups: [
+                {
+                    displayName: "Labels",
+                    uid: "labelsCard_labels_group_uid",
+                    slices: [
+                        {
+                            displayName: "Show",
+                            uid: "labelsCard_labels_show_uid",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "labels",
+                                        propertyName: "show"
+                                    },
+                                    value: showLabels
+                                }
+                            }
+                        },
+                        {
+                            displayName: "Color",
+                            uid: "labelsCard_labels_color_uid",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ColorPicker,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "labels",
+                                        propertyName: "color"
+                                    },
+                                    value: {value: labelColor}
+                                }
+                            }
+                        },
+                        {
+                            displayName: "Precision",
+                            uid: "labelsCard_labels_precision_uid",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "labels",
+                                        propertyName: "labelPrecision"
+                                    },
+                                    value: labelPrecision,
+                                }
+                            }
+                        },
+                    ]
+                }
+            ]
+        };
+        return labelsCard;
+    }
+
+    private getSeriesFormattingCard(): powerbi.visuals.FormattingCard {
+        const seriesSortSettings: MekkoSeriesSortSettings = (<BaseColumnChart>this.layers[0]).getSeriesSortSettings();
+        let seriesCard : powerbi.visuals.FormattingCard = {
+            description: "Series",
+            displayName: "Series",
+            uid: "series_uid",
+            groups: [
+                {
+                    displayName: "Series Sort",
+                    uid: "seriesCard_sortSeries_group_uid",
+                    slices: [
+                        {
+                            uid: "seriesCard_sortSeries_enable_uid",
+                            displayName: "Enabled",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortSeries",
+                                        propertyName: "enabled"
+                                    },
+                                    value: seriesSortSettings.enabled
+                                }
+                            }
+                        },
+                        {
+                            uid: "seriesCard_sortSeries_direction_uid",
+                            displayName: "Direction",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.Dropdown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortSeries",
+                                        propertyName: "direction"
+                                    },
+                                    value: seriesSortSettings.direction
+                                }
+                            }
+                        },
+                        {
+                            uid: "seriesCard_sortSeries_displayPercents_uid",
+                            displayName: "Display Percents",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.Dropdown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "sortSeries",
+                                        propertyName: "displayPercents"
+                                    },
+                                    value: seriesSortSettings.displayPercents
+                                }
+                            }
+                        },
+                    ]
+                }
+            ]
+        };
+        return seriesCard;
+    }
+
+    private getAxisFormattingCard(): powerbi.visuals.FormattingCard {
+        const xAxisLabelsSettings: MekkoXAxisLabelsSettings = (<BaseColumnChart>this.layers[0]).getXAxisLabelsSettings();
+        const xAxisRotationEnabled: boolean = xAxisLabelsSettings.enableRotataion ?? false;
+        
+        let axisCard : powerbi.visuals.FormattingCard = {
+            description: "Axis",
+            displayName: "Axis",
+            uid: "axis_uid",
+            groups: [
+                {
+                    displayName: "Axis Labels",
+                    uid: "axisCard_axisLabels_group_uid",
+                    slices: [
+                        {
+                            uid: "axisCard_axisLabels_enable_uid",
+                            displayName: "Enable Rotation",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "xAxisLabels",
+                                        propertyName: "enableRotataion"
+                                    },
+                                    value: xAxisRotationEnabled
+                                }
+                            }
+                        },
+                    ]
+                }
+            ]
+        };
+        axisCard.groups.push(this.getCategoryAxisFormattingGroup());
+        axisCard.groups.push(this.getValueAxisFormattingGroup());
+        return axisCard;
+    }
+
+    private getCategoryAxisFormattingGroup(): powerbi.visuals.FormattingGroup {
+        const showCategoryAxis: boolean = <boolean>(this.categoryAxisProperties["show"]) ?? true;
+        const showCategoryAxisTitle: boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]) ?? true;
+        const categoryAxisLabelColor: string = <string>(this.categoryAxisProperties["labelColor"]) ?? "black";
+        const categoryAxisFontSize: number = <number>(this.categoryAxisProperties["fontSize"]) ?? 9;
+        
+        let categoryAxisGroup: powerbi.visuals.FormattingGroup = {
+            displayName: "X Axis",
+            uid: "axisCard_xAxis_group_uid",
+            slices: [
+                {
+                    uid: "axisCard_xAxis_show_uid",
+                    displayName: "Show",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "categoryAxis",
+                                propertyName: "show"
+                            },
+                            value: showCategoryAxis 
+                        }
+                    }
+                },
+                {
+                    uid: "axisCard_xAxis_showTitle_uid",
+                    displayName: "Show Title",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "categoryAxis",
+                                propertyName: "showAxisTitle"
+                            },
+                            value: showCategoryAxisTitle
+                        }
+                    }
+                },
+                {
+                    uid: "axisCard_xAxis_labelColor_uid",
+                    displayName: "Label Color",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ColorPicker,
+                        properties: {
+                            descriptor: {
+                                objectName: "categoryAxis",
+                                propertyName: "labelColor"
+                            },
+                            value: {value: categoryAxisLabelColor}
+                        }
+                    }
+                },
+                {
+                    uid: "axisCard_xAxis_fontSize_uid",
+                    displayName: "Font Size",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.NumUpDown,
+                        properties: {
+                            descriptor: {
+                                objectName: "categoryAxis",
+                                propertyName: "fontSize"
+                            },
+                            value: categoryAxisFontSize
+                        }
+                    }
+                }
+            ]
+        }
+        return categoryAxisGroup;
+    }
+
+    private getValueAxisFormattingGroup(): powerbi.visuals.FormattingGroup {
+        const showValueAxis: boolean = <boolean>(this.valueAxisProperties["show"]) ?? true;
+        const showValueAxisTitle: boolean = <boolean>(this.valueAxisProperties["showAxisTitle"]) ?? true;
+        const valueAxisLabelColor: string = <string>(this.valueAxisProperties["labelColor"]) ?? "black";
+        const valueAxisFontSize: number = <number>(this.valueAxisProperties["fontSize"]) ?? 9;
+
+        let valueAxisGroup: powerbi.visuals.FormattingGroup = {
+            displayName: "Y Axis",
+            uid: "axisCard_yAxis_group_uid",
+            slices: [
+                {
+                    uid: "axisCard_yAxis_show_uid",
+                    displayName: "Show",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "valueAxis",
+                                propertyName: "show"
+                            },
+                            value: showValueAxis
+                        }
+                    }
+                },
+                {
+                    uid: "axisCard_yAxis_showTitle_uid",
+                    displayName: "Show Title",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "valueAxis",
+                                propertyName: "showAxisTitle"
+                            },
+                            value: showValueAxisTitle
+                        }
+                    }
+                },
+                {
+                    uid: "axisCard_yAxis_labelColor_uid",
+                    displayName: "Label Color",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ColorPicker,
+                        properties: {
+                            descriptor: {
+                                objectName: "valueAxis",
+                                propertyName: "labelColor"
+                            },
+                            value: {value: valueAxisLabelColor}
+                        }
+                    }
+                },
+                {
+                    uid: "axisCard_yAxis_fontSize_uid",
+                    displayName: "Font Size",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.NumUpDown,
+                        properties: {
+                            descriptor: {
+                                objectName: "valueAxis",
+                                propertyName: "fontSize"
+                            },
+                            value: valueAxisFontSize
+                        }
+                    }
+                }
+            ]
+        }
+        return valueAxisGroup;
     }
 
     private enumerateLegend(
