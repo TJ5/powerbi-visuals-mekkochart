@@ -1223,222 +1223,13 @@ export class MekkoChart implements IVisual {
     }
 
     public getFormattingModel(): powerbi.visuals.FormattingModel  {        
-        const dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
-        const showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints ?? false;
-        const defaultDataPointColor: string = (<BaseColumnChart>this.layers[0]).getData().defaultDataPointColor;
-        
-        const layersLength: number = this.layers
-            ? this.layers.length
-            : 0;
-        
-        
-        let showGradientSlice: powerbi.visuals.FormattingSlice = {
-            uid: "dataPointsCard_dataPoints_categoryGradient_uid",
-            displayName: "Category Gradient",
-            control: {
-                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                properties: {
-                    descriptor: {
-                        objectName: "dataPoint",
-                        propertyName: "categoryGradient"
-                    },
-                    value: dataPointSettings.categoryGradient
-                }
-            }
-        };
-        let pointsCardGroup: powerbi.visuals.FormattingGroup = {
-            displayName: "Data Points",
-            uid: "dataPointsCard_dataPoints_group_uid",
-            slices: [
-                /*
-                {
-                    uid: "dataPointsCard_dataPoints_colorDistribution_uid",
-                    displayName: "Color Distribution",
-                    control: {
-                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                        properties: {
-                            descriptor: {
-                                objectName: "dataPoint",
-                                propertyName: "colorDistribution"
-                            },
-                            value: dataPointSettings.colorDistribution
-                        }
-                    }
-                },
-                {
-                    uid: "dataPointsCard_dataPoints_endGradient_uid",
-                    displayName: "End Color of Gradient",
-                    control: {
-                        type: powerbi.visuals.FormattingComponent.ColorPicker,
-                        properties: {
-                            descriptor: {
-                                objectName: "dataPoint",
-                                propertyName: "colorGradientEndColor"
-                            },
-                            value: {value: dataPointSettings.colorGradientEndColor}
-                        }
-                    }
-                },
-                {
-                    uid: "dataPointsCard_dataPoints_defaultColor_uid",
-                    displayName: "Default Color",
-                    control: {
-                        type: powerbi.visuals.FormattingComponent.ColorPicker,
-                        properties: {
-                            descriptor: {
-                                objectName: "dataPoint",
-                                propertyName: "defaultColor"
-                            },
-                            value: {value: defaultDataPointColor}
-                        }
-                    }
-                },
-                */
-                {
-                    uid: "dataPointsCard_dataPoints_showAllDataPoints_uid",
-                    displayName: "Show All Data Points",
-                    control: {
-                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                        properties: {
-                            descriptor: {
-                                objectName: "dataPoint",
-                                propertyName: "showAllDataPoints"
-                            },
-                            value: showAllDataPoints
-                        }
-                    }
-                },
-            ]
-        }
-        if ((<BaseColumnChart>this.layers[0]).checkDataToFeatures()) {
-            pointsCardGroup.slices.push(showGradientSlice);
-        }
-        let pointsCard : powerbi.visuals.FormattingCard = {
-            description: "Data Points",
-            displayName: "Data Points",
-            uid: "dataPoints_uid",
-            groups: [
-                pointsCardGroup
-            ]
-        };
-    
-        
-        if (dataPointSettings.categoryGradient === false) {
-            //Loop through each category in each layer
-            for (let i: number = 0; i < layersLength; i++) {
-                /*
-                (<BaseColumnChart>this.layers[i]).getData().categories.forEach((category, index) => {
-                    //Get the MekkoLegendDataPoint object corresponding to the category
-                    let categoryLegends: MekkoLegendDataPoint[] = (<BaseColumnChart>this.layers[i]).getData().legendData.dataPoints.filter(legend => legend.category == category);
-                    //console.log(category + " " + index + " " + categoryLegends[0]);
-                    console.log((<BaseColumnChart>this.layers[i]).getData().categories)
-                    //Push a menu slice with a color picker to determine the category's start color gradient
-                    pointsCardGroup.slices.push({
-                        uid: `dataPointsCard_dataPoints_${category}Start_uid`,
-                        displayName: `${category} Start`,
-                        control: {
-                            type: powerbi.visuals.FormattingComponent.ColorPicker,
-                            properties: {
-                                descriptor: {
-                                    objectName: "categoryColorStart",
-                                    propertyName: "categoryGradient",
-                                    selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
-                                },
-                                value: {value: categoryLegends[0].categoryStartColor}
-                            }
-                        }
-                    });     
-                    pointsCardGroup.slices.push({
-                        uid: `dataPointsCard_dataPoints_${category}End_uid`,
-                        displayName: `${category} End`,
-                        control: {
-                            type: powerbi.visuals.FormattingComponent.ColorPicker,
-                            properties: {
-                                descriptor: {
-                                    objectName: "categoryColorEnd",
-                                    propertyName: "categoryGradient",
-                                    selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
-                                },
-                                value: {value: categoryLegends[0].categoryEndColor}
-                            }
-                        }
-                    });                
-                });
-                */
-                for (let series of (<BaseColumnChart>this.layers[i]).getData().series) {
-                    pointsCardGroup.slices.push({
-                        uid: `dataPointsCard_dataPoints_${series.displayName}Color_uid`,
-                        displayName: `${series.displayName} Color`,
-                        control: {
-                            type: powerbi.visuals.FormattingComponent.ColorPicker,
-                            properties: {
-                                descriptor: {
-                                    objectName: "dataPoint",
-                                    propertyName: "fill",
-                                    selector: ColorHelper.normalizeSelector(series.identity.getSelector(), true),
-                                },
-                                value: {value: series.color}
-                            }
-                        }
-                    });
-                }
-            }
-        }
-        else {
-            for (let i: number = 0; i < layersLength; i++) {
-                (<BaseColumnChart>this.layers[i]).getData().categories.forEach((category, index) => {
-                    //Get the MekkoLegendDataPoint object corresponding to the category
-                    let categoryLegends: MekkoLegendDataPoint[] = (<BaseColumnChart>this.layers[i]).getData().legendData.dataPoints.filter(legend => legend.category == category);
-                    //console.log(category + " " + index + " " + categoryLegends[0]);
-                    for (let l of categoryLegends) {
-                        console.log(l.category);
-                    }
-                    console.log("Categories: " + (<BaseColumnChart>this.layers[i]).getData().categories);
-                    if (categoryLegends[0] == undefined) {
-                        return;
-                    }
-                    //Push a menu slice with a color picker to determine the category's start color gradient
-                    pointsCardGroup.slices.push({
-                        uid: `dataPointsCard_dataPoints_${category}Start_uid`,
-                        displayName: `${category} Start`,
-                        control: {
-                            type: powerbi.visuals.FormattingComponent.ColorPicker,
-                            properties: {
-                                descriptor: {
-                                    objectName: "categoryColorStart",
-                                    propertyName: "categoryGradient",
-                                    selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
-                                },
-                                value: {value: categoryLegends[0].categoryStartColor}
-                            }
-                        }
-                    });     
-                    pointsCardGroup.slices.push({
-                        uid: `dataPointsCard_dataPoints_${category}End_uid`,
-                        displayName: `${category} End`,
-                        control: {
-                            type: powerbi.visuals.FormattingComponent.ColorPicker,
-                            properties: {
-                                descriptor: {
-                                    objectName: "categoryColorEnd",
-                                    propertyName: "categoryGradient",
-                                    selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
-                                },
-                                value: {value: categoryLegends[0].categoryEndColor}
-                            }
-                        }
-                    });                
-                });
-            }
-        }
-        
         const formattingModel: powerbi.visuals.FormattingModel = { cards: [
             this.getColumnBorderFormattingCard(),
             this.getLegendFormattingCard(),
             this.getLabelsFormattingCard(),
             this.getSeriesFormattingCard(),
             this.getAxisFormattingCard(),
-            pointsCard
+            this.getPointsFormattingCard()
         ]};
         return formattingModel;
     }
@@ -1956,6 +1747,139 @@ export class MekkoChart implements IVisual {
         return valueAxisGroup;
     }
 
+    private getPointsFormattingCard(): powerbi.visuals.FormattingCard {
+        const dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
+        const showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints ?? false;
+        
+        let showGradientSlice: powerbi.visuals.FormattingSlice = {
+            uid: "dataPointsCard_dataPoints_categoryGradient_uid",
+            displayName: "Category Gradient",
+            control: {
+                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                properties: {
+                    descriptor: {
+                        objectName: "dataPoint",
+                        propertyName: "categoryGradient"
+                    },
+                    value: dataPointSettings.categoryGradient
+                }
+            }
+        };
+
+        let pointsCardGroup: powerbi.visuals.FormattingGroup = {
+            displayName: "Data Points",
+            uid: "dataPointsCard_dataPoints_group_uid",
+            slices: [
+                {
+                    uid: "dataPointsCard_dataPoints_showAllDataPoints_uid",
+                    displayName: "Show All Data Points",
+                    control: {
+                        type: powerbi.visuals.FormattingComponent.ToggleSwitch,
+                        properties: {
+                            descriptor: {
+                                objectName: "dataPoint",
+                                propertyName: "showAllDataPoints"
+                            },
+                            value: showAllDataPoints
+                        }
+                    }
+                },
+            ]
+        }
+
+        if ((<BaseColumnChart>this.layers[0]).checkDataToFeatures()) {
+            pointsCardGroup.slices.push(showGradientSlice);
+        }
+        
+        pointsCardGroup = this.addCategoryColorFormattingSlices(pointsCardGroup);
+
+        let pointsCard : powerbi.visuals.FormattingCard = {
+            description: "Data Points",
+            displayName: "Data Points",
+            uid: "dataPoints_uid",
+            groups: [
+                pointsCardGroup
+            ]
+        };
+        return pointsCard;
+    }
+
+    private addCategoryColorFormattingSlices(
+        pointsCardGroup: powerbi.visuals.FormattingGroup): powerbi.visuals.FormattingGroup {
+        
+        const dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
+        const layersLength: number = this.layers ? this.layers.length : 0;
+
+        if (dataPointSettings.categoryGradient === false) {
+            //Loop through each category in each layer
+            for (let i: number = 0; i < layersLength; i++) {
+                for (let series of (<BaseColumnChart>this.layers[i]).getData().series) {
+                    pointsCardGroup.slices.push({
+                        uid: `dataPointsCard_dataPoints_${series.displayName}Color_uid`,
+                        displayName: `${series.displayName} Color`,
+                        control: {
+                            type: powerbi.visuals.FormattingComponent.ColorPicker,
+                            properties: {
+                                descriptor: {
+                                    objectName: "dataPoint",
+                                    propertyName: "fill",
+                                    selector: ColorHelper.normalizeSelector(series.identity.getSelector(), true),
+                                },
+                                value: {value: series.color}
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        else {
+            for (let i: number = 0; i < layersLength; i++) {
+                (<BaseColumnChart>this.layers[i]).getData().categories.forEach((category, index) => {
+                    //Get the MekkoLegendDataPoint object corresponding to the category
+                    let categoryLegends: MekkoLegendDataPoint[] = (<BaseColumnChart>this.layers[i]).getData().legendData.dataPoints.filter(legend => legend.category == category);
+                    for (let l of categoryLegends) {
+                        console.log(l.category);
+                    }
+                    console.log("Categories: " + (<BaseColumnChart>this.layers[i]).getData().categories);
+                    if (categoryLegends[0] == undefined) {
+                        return;
+                    }
+                    //Push a menu slice with a color picker to determine the category's start color gradient
+                    pointsCardGroup.slices.push({
+                        uid: `dataPointsCard_dataPoints_${category}Start_uid`,
+                        displayName: `${category} Start`,
+                        control: {
+                            type: powerbi.visuals.FormattingComponent.ColorPicker,
+                            properties: {
+                                descriptor: {
+                                    objectName: "categoryColorStart",
+                                    propertyName: "categoryGradient",
+                                    selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
+                                },
+                                value: {value: categoryLegends[0].categoryStartColor}
+                            }
+                        }
+                    });     
+                    pointsCardGroup.slices.push({
+                        uid: `dataPointsCard_dataPoints_${category}End_uid`,
+                        displayName: `${category} End`,
+                        control: {
+                            type: powerbi.visuals.FormattingComponent.ColorPicker,
+                            properties: {
+                                descriptor: {
+                                    objectName: "categoryColorEnd",
+                                    propertyName: "categoryGradient",
+                                    selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
+                                },
+                                value: {value: categoryLegends[0].categoryEndColor}
+                            }
+                        }
+                    });                
+                });
+            }
+        }
+        return pointsCardGroup;
+    }
     private enumerateLegend(
         options: EnumerateVisualObjectInstancesOptions,
         instances: VisualObjectInstance[]): void {
