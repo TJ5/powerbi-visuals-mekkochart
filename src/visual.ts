@@ -616,8 +616,8 @@ export class MekkoChart implements IVisual {
                 )
                 .style(
                     "fill", options.xLabelColor
-                        ? options.xLabelColor.solid.color
-                        : null
+                    ? options.xLabelColor.solid.color
+                    : null
                 )
                 .text(options.axisLabels.x)
                 .classed(MekkoChart.XAxisLabelSelector.className, true);
@@ -632,15 +632,15 @@ export class MekkoChart implements IVisual {
             const yAxisLabel: Selection = this.axisGraphicsContext.append("text")
                 .style(
                     "fill", options.yLabelColor
-                        ? options.yLabelColor.solid.color
-                        : null
+                    ? options.yLabelColor.solid.color
+                    : null
                 )
                 .text(options.axisLabels.y)
                 .attr("transform", MekkoChart.TransformRotate)
                 .attr(
                     "y", showOnRight
-                        ? width + margin.right - fontSize
-                        : -margin.left
+                    ? width + margin.right - fontSize
+                    : -margin.left
                 )
                 .attr("x", -((height - margin.top - options.legendMargin) / MekkoChart.XDelimiter))
                 .attr("dy", MekkoChart.DefaultDy)
@@ -660,8 +660,8 @@ export class MekkoChart implements IVisual {
                 .attr("dy", MekkoChart.DefaultDy)
                 .style(
                     "fill", options.y2LabelColor
-                        ? options.y2LabelColor.solid.color
-                        : null
+                    ? options.y2LabelColor.solid.color
+                    : null
                 )
                 .classed(MekkoChart.YAxisLabelSelector.className, true);
 
@@ -1222,15 +1222,17 @@ export class MekkoChart implements IVisual {
         instances.push(instance);
     }
 
-    public getFormattingModel(): powerbi.visuals.FormattingModel  {        
-        const formattingModel: powerbi.visuals.FormattingModel = { cards: [
-            this.getColumnBorderFormattingCard(),
-            this.getLegendFormattingCard(),
-            this.getLabelsFormattingCard(),
-            this.getSeriesFormattingCard(),
-            this.getAxisFormattingCard(),
-            this.getPointsFormattingCard()
-        ]};
+    public getFormattingModel(): powerbi.visuals.FormattingModel {
+        const formattingModel: powerbi.visuals.FormattingModel = {
+            cards: [
+                this.getColumnBorderFormattingCard(),
+                this.getLegendFormattingCard(),
+                this.getLabelsFormattingCard(),
+                this.getSeriesFormattingCard(),
+                this.getAxisFormattingCard(),
+                this.getPointsFormattingCard()
+            ]
+        };
         return formattingModel;
     }
 
@@ -1238,7 +1240,7 @@ export class MekkoChart implements IVisual {
         let borderShow: boolean = <boolean>(this.borderObjectProperties["show"]) ?? true;
         let borderColor: string = <string>(this.borderObjectProperties["color"]) ?? "white";
         let borderWidth: number = <number>(this.borderObjectProperties["width"]) ?? 1;
-        let columnBorderCard : powerbi.visuals.FormattingCard = {
+        let columnBorderCard: powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
             uid: "columnBorder_uid",
@@ -1246,7 +1248,7 @@ export class MekkoChart implements IVisual {
                 {
                     displayName: "Column Border Group",
                     uid: "columnBorderCard_columnBorder_group_uid",
-                    slices : [
+                    slices: [
                         {
                             uid: "columnBorderCard_columnBorder_show_uid",
                             displayName: "Show",
@@ -1271,7 +1273,7 @@ export class MekkoChart implements IVisual {
                                         objectName: "columnBorder",
                                         propertyName: "color"
                                     },
-                                    value: {value: borderColor}
+                                    value: { value: borderColor }
                                 }
                             }
                         },
@@ -1293,19 +1295,20 @@ export class MekkoChart implements IVisual {
                 }
             ]
         };
+
         return columnBorderCard;
     }
 
     private getLegendFormattingCard(): powerbi.visuals.FormattingCard {
         let legendShow: boolean = <boolean>this.legendObjectProperties.show ?? true;
         let legendShowTitle: boolean = <boolean>this.legendObjectProperties.showTitle ?? true;
-        let legendTitleText: string = <string>this.legendObjectProperties.titleText ?? 
+        let legendTitleText: string = <string>this.legendObjectProperties.titleText ??
             (this.layerLegendData && this.layerLegendData.title ? this.layerLegendData.title : "");
-        let legendFontSize: number = <number>this.legendObjectProperties.fontSize ?? 
-            (this.layerLegendData && this.layerLegendData.fontSize ? this.layerLegendData.fontSize 
-            : MekkoChart.DefaultLabelFontSizeInPt);
-       
-        let legendCard : powerbi.visuals.FormattingCard = {
+        let legendFontSize: number = <number>this.legendObjectProperties.fontSize ??
+            (this.layerLegendData && this.layerLegendData.fontSize ? this.layerLegendData.fontSize
+                : MekkoChart.DefaultLabelFontSizeInPt);
+
+        let legendCard: powerbi.visuals.FormattingCard = {
             description: "Legend",
             displayName: "Legend",
             uid: "legend_uid",
@@ -1352,7 +1355,7 @@ export class MekkoChart implements IVisual {
                                         objectName: "legend",
                                         propertyName: "titleText"
                                     },
-                                    value: legendTitleText,   
+                                    value: legendTitleText,
                                     placeholder: "Title Text",
                                 }
                             }
@@ -1442,7 +1445,7 @@ export class MekkoChart implements IVisual {
                     }
                 },
             ]
-        }
+        };
         return sortLegendGroup;
     }
 
@@ -1451,7 +1454,7 @@ export class MekkoChart implements IVisual {
         const showLabels: boolean = (<BaseColumnChart>this.layers[0]).getData().labelSettings.show ?? true;
         const labelPrecision: number = (<BaseColumnChart>this.layers[0]).getData().labelSettings.precision;
 
-        let labelsCard : powerbi.visuals.FormattingCard = {
+        let labelsCard: powerbi.visuals.FormattingCard = {
             description: "Labels",
             displayName: "Labels",
             uid: "labels_uid",
@@ -1484,7 +1487,7 @@ export class MekkoChart implements IVisual {
                                         objectName: "labels",
                                         propertyName: "color"
                                     },
-                                    value: {value: labelColor}
+                                    value: { value: labelColor }
                                 }
                             }
                         },
@@ -1511,7 +1514,7 @@ export class MekkoChart implements IVisual {
 
     private getSeriesFormattingCard(): powerbi.visuals.FormattingCard {
         const seriesSortSettings: MekkoSeriesSortSettings = (<BaseColumnChart>this.layers[0]).getSeriesSortSettings();
-        let seriesCard : powerbi.visuals.FormattingCard = {
+        let seriesCard: powerbi.visuals.FormattingCard = {
             description: "Series",
             displayName: "Series",
             uid: "series_uid",
@@ -1572,8 +1575,8 @@ export class MekkoChart implements IVisual {
     private getAxisFormattingCard(): powerbi.visuals.FormattingCard {
         const xAxisLabelsSettings: MekkoXAxisLabelsSettings = (<BaseColumnChart>this.layers[0]).getXAxisLabelsSettings();
         const xAxisRotationEnabled: boolean = xAxisLabelsSettings.enableRotataion ?? false;
-        
-        let axisCard : powerbi.visuals.FormattingCard = {
+
+        let axisCard: powerbi.visuals.FormattingCard = {
             description: "Axis",
             displayName: "Axis",
             uid: "axis_uid",
@@ -1610,7 +1613,7 @@ export class MekkoChart implements IVisual {
         const showCategoryAxisTitle: boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]) ?? true;
         const categoryAxisLabelColor: string = <string>(this.categoryAxisProperties["labelColor"]) ?? "black";
         const categoryAxisFontSize: number = <number>(this.categoryAxisProperties["fontSize"]) ?? 9;
-        
+
         let categoryAxisGroup: powerbi.visuals.FormattingGroup = {
             displayName: "X Axis",
             uid: "axisCard_xAxis_group_uid",
@@ -1625,7 +1628,7 @@ export class MekkoChart implements IVisual {
                                 objectName: "categoryAxis",
                                 propertyName: "show"
                             },
-                            value: showCategoryAxis 
+                            value: showCategoryAxis
                         }
                     }
                 },
@@ -1653,7 +1656,7 @@ export class MekkoChart implements IVisual {
                                 objectName: "categoryAxis",
                                 propertyName: "labelColor"
                             },
-                            value: {value: categoryAxisLabelColor}
+                            value: { value: categoryAxisLabelColor }
                         }
                     }
                 },
@@ -1672,7 +1675,7 @@ export class MekkoChart implements IVisual {
                     }
                 }
             ]
-        }
+        };
         return categoryAxisGroup;
     }
 
@@ -1724,7 +1727,7 @@ export class MekkoChart implements IVisual {
                                 objectName: "valueAxis",
                                 propertyName: "labelColor"
                             },
-                            value: {value: valueAxisLabelColor}
+                            value: { value: valueAxisLabelColor }
                         }
                     }
                 },
@@ -1743,14 +1746,14 @@ export class MekkoChart implements IVisual {
                     }
                 }
             ]
-        }
+        };
         return valueAxisGroup;
     }
 
     private getPointsFormattingCard(): powerbi.visuals.FormattingCard {
         const dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
         const showAllDataPoints: boolean = (<BaseColumnChart>this.layers[0]).getData().showAllDataPoints ?? false;
-        
+
         let showGradientSlice: powerbi.visuals.FormattingSlice = {
             uid: "dataPointsCard_dataPoints_categoryGradient_uid",
             displayName: "Category Gradient",
@@ -1785,15 +1788,15 @@ export class MekkoChart implements IVisual {
                     }
                 },
             ]
-        }
+        };
 
         if ((<BaseColumnChart>this.layers[0]).checkDataToFeatures()) {
             pointsCardGroup.slices.push(showGradientSlice);
         }
-        
+
         pointsCardGroup = this.addCategoryColorFormattingSlices(pointsCardGroup);
 
-        let pointsCard : powerbi.visuals.FormattingCard = {
+        let pointsCard: powerbi.visuals.FormattingCard = {
             description: "Data Points",
             displayName: "Data Points",
             uid: "dataPoints_uid",
@@ -1806,12 +1809,11 @@ export class MekkoChart implements IVisual {
 
     private addCategoryColorFormattingSlices(
         pointsCardGroup: powerbi.visuals.FormattingGroup): powerbi.visuals.FormattingGroup {
-        
+
         const dataPointSettings: MekkoDataPointSettings = (<BaseColumnChart>this.layers[0]).getData().dataPointSettings;
         const layersLength: number = this.layers ? this.layers.length : 0;
 
         if (dataPointSettings.categoryGradient === false) {
-            //Loop through each category in each layer
             for (let i: number = 0; i < layersLength; i++) {
                 for (let series of (<BaseColumnChart>this.layers[i]).getData().series) {
                     pointsCardGroup.slices.push({
@@ -1825,7 +1827,7 @@ export class MekkoChart implements IVisual {
                                     propertyName: "fill",
                                     selector: ColorHelper.normalizeSelector(series.identity.getSelector(), true),
                                 },
-                                value: {value: series.color}
+                                value: { value: series.color }
                             }
                         }
                     });
@@ -1835,16 +1837,10 @@ export class MekkoChart implements IVisual {
         else {
             for (let i: number = 0; i < layersLength; i++) {
                 (<BaseColumnChart>this.layers[i]).getData().categories.forEach((category, index) => {
-                    //Get the MekkoLegendDataPoint object corresponding to the category
-                    let categoryLegends: MekkoLegendDataPoint[] = (<BaseColumnChart>this.layers[i]).getData().legendData.dataPoints.filter(legend => legend.category == category);
-                    for (let l of categoryLegends) {
-                        console.log(l.category);
-                    }
-                    console.log("Categories: " + (<BaseColumnChart>this.layers[i]).getData().categories);
-                    if (categoryLegends[0] == undefined) {
+                    let categoryLegends: MekkoLegendDataPoint[] = (<BaseColumnChart>this.layers[i]).getData().legendData.dataPoints.filter(legend => legend.category === category);
+                    if (categoryLegends[0] === undefined) {
                         return;
                     }
-                    //Push a menu slice with a color picker to determine the category's start color gradient
                     pointsCardGroup.slices.push({
                         uid: `dataPointsCard_dataPoints_${category}Start_uid`,
                         displayName: `${category} Start`,
@@ -1856,10 +1852,10 @@ export class MekkoChart implements IVisual {
                                     propertyName: "categoryGradient",
                                     selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
                                 },
-                                value: {value: categoryLegends[0].categoryStartColor}
+                                value: { value: categoryLegends[0].categoryStartColor }
                             }
                         }
-                    });     
+                    });
                     pointsCardGroup.slices.push({
                         uid: `dataPointsCard_dataPoints_${category}End_uid`,
                         displayName: `${category} End`,
@@ -1871,10 +1867,10 @@ export class MekkoChart implements IVisual {
                                     propertyName: "categoryGradient",
                                     selector: ColorHelper.normalizeSelector(categoryLegends[0].categoryIdentity.getSelector(), true),
                                 },
-                                value: {value: categoryLegends[0].categoryEndColor}
+                                value: { value: categoryLegends[0].categoryEndColor }
                             }
                         }
-                    });                
+                    });
                 });
             }
         }
