@@ -1463,7 +1463,9 @@ export class MekkoChart implements IVisual {
         const labelColor: string = (<BaseColumnChart>this.layers[0]).getData().labelSettings.labelColor ?? "white";
         const showLabels: boolean = (<BaseColumnChart>this.layers[0]).getData().labelSettings.show ?? true;
         const labelPrecision: number = (<BaseColumnChart>this.layers[0]).getData().labelSettings.precision;
-
+        const labelSize: number = (<BaseColumnChart>this.layers[0]).getData().labelSettings.fontSize 
+        ?? MekkoChart.DefaultLabelFontSizeInPt;
+        
         let labelsCard: powerbi.visuals.FormattingCard = {
             description: "Labels",
             displayName: "Labels",
@@ -1512,6 +1514,20 @@ export class MekkoChart implements IVisual {
                                         propertyName: "labelPrecision"
                                     },
                                     value: labelPrecision,
+                                }
+                            }
+                        },
+                        {
+                            displayName: "Font Size",
+                            uid: "labelsCard_labels_fontSize_uid",
+                            control: {
+                                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                                properties: {
+                                    descriptor: {
+                                        objectName: "labels",
+                                        propertyName: "fontSize"
+                                    },
+                                    value: labelSize,
                                 }
                             }
                         },
