@@ -1307,7 +1307,8 @@ export class MekkoChart implements IVisual {
         const legendFontSize: number = <number>this.legendObjectProperties.fontSize ??
             (this.layerLegendData && this.layerLegendData.fontSize ? this.layerLegendData.fontSize
                 : MekkoChart.DefaultLabelFontSizeInPt);
-        
+        const legendFontFamily: string = <string>this.legendObjectProperties.fontFamily ?? "Arial";
+
         let legendCard: powerbi.visuals.FormattingCard = {
             description: "Legend",
             displayName: "Legend",
@@ -1361,16 +1362,25 @@ export class MekkoChart implements IVisual {
                             }
                         },
                         {
-                            uid: "legendCard_legend_titleTextSize_uid",
-                            displayName: "Text Size",
+                            uid: "legendCard_legend_titleFontControl_uid",
+                            displayName: "Legend Title Font",
                             control: {
-                                type: powerbi.visuals.FormattingComponent.NumUpDown,
+                                type: powerbi.visuals.FormattingComponent.FontControl,
                                 properties: {
-                                    descriptor: {
-                                        objectName: "legend",
-                                        propertyName: "fontSize"
+                                    fontFamily: {
+                                        descriptor: {
+                                            objectName: "legend",
+                                            propertyName: "fontFamily"
+                                        },
+                                        value: legendFontFamily
                                     },
-                                    value: legendFontSize
+                                    fontSize: {
+                                        descriptor: {
+                                            objectName: "legend",
+                                            propertyName: "fontSize"
+                                        },
+                                        value: legendFontSize
+                                    }
                                 }
                             }
                         },
@@ -2193,6 +2203,8 @@ export class MekkoChart implements IVisual {
         let layers: IColumnChart[] = this.layers,
             legendData: ILegendData = {
                 title: "",
+                fontSize: <number>this.legendObjectProperties.fontSize,
+                fontFamily: <string>this.legendObjectProperties.fontFamily,
                 dataPoints: []
             };
 
@@ -2298,7 +2310,8 @@ export class MekkoChart implements IVisual {
         }
 
         let svgHeight: number = textMeasurementService.estimateSvgTextHeight({
-            fontFamily: MekkoChart.LegendBarTextFont,
+            //fontFamily: MekkoChart.LegendBarTextFont,
+            fontFamily: this.legendObjectProperties.fontFamily ?? "helvetica, arial, sans-serif;",
             fontSize: PixelConverter.toString(+legendProperties["fontSize"] + MekkoChart.LegendBarHeightMargin),
             text: "AZ"
         });
@@ -2313,18 +2326,19 @@ export class MekkoChart implements IVisual {
         let legendParentsWithChildsAttr = legendParentsWithChilds.classed("legendParent", true)
             .style("position", "absolute")
             .style("top", (data, index) => PixelConverter.toString(svgHeight * index));
-
+            
         let mekko = this;
         this.categoryLegends = this.categoryLegends || [];
         legendParentsWithChildsAttr.each(function (data, index) {
             let legendSvg = select(this);
+            legendSvg.style("font-family", <string>legendProperties["fontFamily"]);
             if (legendSvg.select("svg").node() === null) {
                 let legend: ILegend = createLegend(
                     <any>this,
                     false,
                     mekko.interactivityService,
                     true);
-
+                
                 mekko.categoryLegends[index] = <ILegend>legend;
             }
         });
