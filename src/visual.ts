@@ -1300,14 +1300,14 @@ export class MekkoChart implements IVisual {
     }
 
     private getLegendFormattingCard(): powerbi.visuals.FormattingCard {
-        let legendShow: boolean = <boolean>this.legendObjectProperties.show ?? true;
-        let legendShowTitle: boolean = <boolean>this.legendObjectProperties.showTitle ?? true;
-        let legendTitleText: string = <string>this.legendObjectProperties.titleText ??
+        const legendShow: boolean = <boolean>this.legendObjectProperties.show ?? true;
+        const legendShowTitle: boolean = <boolean>this.legendObjectProperties.showTitle ?? true;
+        const legendTitleText: string = <string>this.legendObjectProperties.titleText ??
             (this.layerLegendData && this.layerLegendData.title ? this.layerLegendData.title : "");
-        let legendFontSize: number = <number>this.legendObjectProperties.fontSize ??
+        const legendFontSize: number = <number>this.legendObjectProperties.fontSize ??
             (this.layerLegendData && this.layerLegendData.fontSize ? this.layerLegendData.fontSize
                 : MekkoChart.DefaultLabelFontSizeInPt);
-
+        
         let legendCard: powerbi.visuals.FormattingCard = {
             description: "Legend",
             displayName: "Legend",
