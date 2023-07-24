@@ -192,6 +192,7 @@ import createBaseColumnChartLayer = columnChartBaseColumnChart.createBaseColumnC
 import isScalar = dataViewUtils.isScalar;
 import getValueAxisProperties = dataViewUtils.getValueAxisProperties;
 import getCategoryAxisProperties = dataViewUtils.getCategoryAxisProperties;
+import { fill } from "lodash";
 
 
 export interface MekkoChartProperty {
@@ -1247,9 +1248,10 @@ export class MekkoChart implements IVisual {
     }
 
     private getColumnBorderFormattingCard(): powerbi.visuals.FormattingCard {
-        let borderShow: boolean = <boolean>(this.borderObjectProperties["show"]) ?? true;
-        let borderColor: string = <string>(this.borderObjectProperties["color"]) ?? "white";
-        let borderWidth: number = <number>(this.borderObjectProperties["width"]) ?? 1;
+        const borderShow: boolean = <boolean>(this.borderObjectProperties["show"]) 
+            ?? MekkoChart.DefaultSettings.columnBorder.show;
+        const borderFill: any = this.borderObjectProperties["color"];
+        const borderWidth: number = <number>(this.borderObjectProperties["width"]) ?? 1;
         let columnBorderCard: powerbi.visuals.FormattingCard = {
             description: "Column Border",
             displayName: "Column Border",
@@ -1283,7 +1285,7 @@ export class MekkoChart implements IVisual {
                                         objectName: "columnBorder",
                                         propertyName: "color"
                                     },
-                                    value: { value: borderColor }
+                                    value: { value: borderFill.solid.color }
                                 }
                             }
                         },
