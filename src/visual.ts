@@ -572,7 +572,7 @@ export class MekkoChart implements IVisual {
         return [matrix.e, matrix.f, -Math.asin(matrix.a) * 180 / Math.PI];
     }
 
-    private renderAxesLabels(options: MekkoAxisRenderingOptions, xFontSize: number): void {
+    private renderAxesLabels(options: MekkoAxisRenderingOptions, xFontSize: number, yFontSize: number): void {
         this.axisGraphicsContext
             .selectAll(MekkoChart.XAxisLabelSelector.selectorName)
             .remove();
@@ -626,7 +626,7 @@ export class MekkoChart implements IVisual {
                 .style("text-decoration", <boolean>(this.categoryAxisProperties["fontUnderline"]) ? "underline" : "none")
                 .text(options.axisLabels.x)
                 .classed(MekkoChart.XAxisLabelSelector.className, true);
-
+            
             xAxisLabel.call(
                 AxisHelper.LabelLayoutStrategy.clip,
                 width,
@@ -649,6 +649,11 @@ export class MekkoChart implements IVisual {
                 )
                 .attr("x", -((height - margin.top - options.legendMargin) / MekkoChart.XDelimiter))
                 .attr("dy", MekkoChart.DefaultDy)
+                .style("font-family", <string>(this.valueAxisProperties["fontFamily"]) ?? "Arial")
+                .style("font-size", yFontSize)
+                .style("font-weight", <boolean>(this.valueAxisProperties["fontBold"]) ? "bold" : "normal")
+                .style("font-style", <boolean>(this.valueAxisProperties["fontItalic"]) ? "italic" : "normal")
+                .style("text-decoration", <boolean>(this.valueAxisProperties["fontUnderline"]) ? "underline" : "none")
                 .classed(MekkoChart.YAxisLabelSelector.className, true);
 
             yAxisLabel.call(AxisHelper.LabelLayoutStrategy.clip,
@@ -1644,7 +1649,7 @@ export class MekkoChart implements IVisual {
         const showCategoryAxisTitle: boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]) ?? true;
         const categoryAxisLabelColor: string = <string>(this.categoryAxisProperties["labelColor"]) ?? "black";
         const categoryAxisFontSize: number = <number>(this.categoryAxisProperties["fontSize"]) ?? 9;
-        const categoryAxisFontFamily: string = <string>(this.categoryAxisProperties.fontFamily) ?? "Arial";
+        const categoryAxisFontFamily: string = <string>(this.categoryAxisProperties["fontFamily"]) ?? "Arial";
         const categoryAxisBold: boolean = <boolean>(this.categoryAxisProperties["fontBold"]) ?? false;
         const categoryAxisItalic: boolean = <boolean>(this.categoryAxisProperties["fontItalic"]) ?? false;
         const categoryAxisUnderline: boolean = <boolean>(this.categoryAxisProperties["fontUnderline"]) ?? false;
@@ -3311,7 +3316,7 @@ export class MekkoChart implements IVisual {
                 margin: undefined
             };
 
-            this.renderAxesLabels(renderAxisOptions, xFontSize);
+            this.renderAxesLabels(renderAxisOptions, xFontSize, yFontSize);
         }
         else {
             this.axisGraphicsContext
