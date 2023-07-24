@@ -62,6 +62,7 @@ export function getCategoryAxisProperties(
                 labelDisplayUnits: categoryAxisObject["labelDisplayUnits"],
                 labelPrecision: categoryAxisObject["labelPrecision"],
                 duration: categoryAxisObject["duration"],
+                fontFamily: categoryAxisObject["fontFamily"]
             };
         }
     }

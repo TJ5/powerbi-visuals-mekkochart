@@ -619,6 +619,8 @@ export class MekkoChart implements IVisual {
                     ? options.xLabelColor.solid.color
                     : null
                 )
+                .style("font-family", <string>(this.categoryAxisProperties["fontFamily"]) ?? "Arial")
+                .style("font-size", xFontSize)
                 .text(options.axisLabels.x)
                 .classed(MekkoChart.XAxisLabelSelector.className, true);
 
@@ -1639,7 +1641,11 @@ export class MekkoChart implements IVisual {
         const showCategoryAxisTitle: boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]) ?? true;
         const categoryAxisLabelColor: string = <string>(this.categoryAxisProperties["labelColor"]) ?? "black";
         const categoryAxisFontSize: number = <number>(this.categoryAxisProperties["fontSize"]) ?? 9;
-
+        const categoryAxisFontFamily: string = <string>(this.categoryAxisProperties.fontFamily) ?? "Arial";
+        const categoryAxisBold: boolean = <boolean>(this.categoryAxisProperties["fontBold"]) ?? false;
+        const categoryAxisItalic: boolean = <boolean>(this.categoryAxisProperties["fontItalic"]) ?? false;
+        const categoryAxisUnderline: boolean = <boolean>(this.categoryAxisProperties["fontUnderline"]) ?? false;
+        
         let categoryAxisGroup: powerbi.visuals.FormattingGroup = {
             displayName: "X Axis",
             uid: "axisCard_xAxis_group_uid",
@@ -1687,16 +1693,46 @@ export class MekkoChart implements IVisual {
                     }
                 },
                 {
-                    uid: "axisCard_xAxis_fontSize_uid",
-                    displayName: "Font Size",
+                    uid: "axisCard_xAxis_fontControl_uid",
+                    displayName: "Font Control",
                     control: {
-                        type: powerbi.visuals.FormattingComponent.NumUpDown,
+                        type: powerbi.visuals.FormattingComponent.FontControl,
                         properties: {
-                            descriptor: {
-                                objectName: "categoryAxis",
-                                propertyName: "fontSize"
+                            fontFamily: {
+                                descriptor: {
+                                    objectName: "categoryAxis",
+                                    propertyName: "fontFamily"
+                                },
+                                value: categoryAxisFontFamily
                             },
-                            value: categoryAxisFontSize
+                            fontSize: {
+                                descriptor: {
+                                    objectName: "categoryAxis",
+                                    propertyName: "fontSize"
+                                },
+                                value: categoryAxisFontSize
+                            },
+                            bold: {
+                                descriptor: {
+                                    objectName: "categoryAxis",
+                                    propertyName: "fontBold"
+                                },
+                                value: categoryAxisBold
+                            },
+                            italic: {
+                                descriptor: {
+                                    objectName: "categoryAxis",
+                                    propertyName: "fontItalic"
+                                },
+                                value: categoryAxisItalic
+                            },
+                            underline: {
+                                descriptor: {
+                                    objectName: "categoryAxis",
+                                    propertyName: "fontUnderline"
+                                },
+                                value: categoryAxisUnderline
+                            }
                         }
                     }
                 }
@@ -2909,8 +2945,9 @@ export class MekkoChart implements IVisual {
             yLabelColor: Fill,
             y2LabelColor: Fill,
             xFontSize: any,
-            yFontSize: any;
-
+            yFontSize: any,
+            xFontFamily: any,
+            yFontFamily: any;
         if (this.shouldRenderAxis(axes.x)) {
             if (axes.x.isCategoryAxis) {
                 xLabelColor = this.categoryAxisProperties
@@ -2922,6 +2959,11 @@ export class MekkoChart implements IVisual {
                     && this.categoryAxisProperties["fontSize"] != null
                     ? <Fill>this.categoryAxisProperties["fontSize"]
                     : MekkoChart.DefaultLabelFontSizeInPt;
+                
+                xFontFamily = this.categoryAxisProperties.fontFamily
+                    && this.categoryAxisProperties["fontFamily"] != null
+                    ? <string>this.categoryAxisProperties["fontFamily"]
+                    : "Arial";
             } else {
                 xLabelColor = this.valueAxisProperties
                     && this.valueAxisProperties["labelColor"]
@@ -2932,6 +2974,11 @@ export class MekkoChart implements IVisual {
                     && this.valueAxisProperties["fontSize"]
                     ? this.valueAxisProperties["fontSize"]
                     : MekkoChart.DefaultLabelFontSizeInPt;
+                
+                xFontFamily = this.categoryAxisProperties
+                    && this.categoryAxisProperties["fontFamily"] != null
+                    ? <string>this.categoryAxisProperties["fontFamily"]
+                    : "literally me";
             }
 
             xFontSize = PixelConverter.fromPointToPixel(xFontSize);
@@ -2957,7 +3004,8 @@ export class MekkoChart implements IVisual {
             xAxisGraphicsElement
                 .call(MekkoChart.darkenZeroLine)
                 .call(MekkoChart.setAxisLabelColor, xLabelColor)
-                .call(MekkoChart.setAxisLabelFontSize, xFontSize);
+                .call(MekkoChart.setAxisLabelFontSize, xFontSize)
+                .call(MekkoChart.setAxisLabelFontFamily, xFontFamily);
 
             const xAxisTextNodes: Selection = xAxisGraphicsElement.selectAll("text");
 
@@ -3260,6 +3308,10 @@ export class MekkoChart implements IVisual {
             .attr("font-size", PixelConverter.toString(fontSize));
     }
 
+    private static setAxisLabelFontFamily(selection: Selection, fontFamily: string): void {
+        MekkoChart.getTickText(selection)
+            .style("font-family", fontFamily);
+    }
     private static moveBorder(
         selection: Selection,
         scale: d3.ScaleLinear<number, number>,
