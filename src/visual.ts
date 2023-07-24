@@ -3039,8 +3039,8 @@ export class MekkoChart implements IVisual {
                     : "Arial";
                 
                 xFontBold = this.valueAxisProperties
-                    && this.categoryAxisProperties["fontBold"] != null
-                    ? <boolean>this.categoryAxisProperties["fontBold"]
+                    && this.valueAxisProperties["fontBold"] != null
+                    ? <boolean>this.valueAxisProperties["fontBold"]
                     : false;
                 
                 xFontItalic = this.valueAxisProperties
@@ -3179,8 +3179,8 @@ export class MekkoChart implements IVisual {
                     : "Arial";
                 
                 yFontBold = this.valueAxisProperties
-                    && this.categoryAxisProperties["fontBold"] != null
-                    ? <boolean>this.categoryAxisProperties["fontBold"]
+                    && this.valueAxisProperties["fontBold"] != null
+                    ? <boolean>this.valueAxisProperties["fontBold"]
                     : false;
                 
                 yFontItalic = this.valueAxisProperties
@@ -3219,7 +3219,9 @@ export class MekkoChart implements IVisual {
             y1AxisGraphicsElement
                 .call(MekkoChart.darkenZeroLine)
                 .call(MekkoChart.setAxisLabelColor, yLabelColor)
-                .call(MekkoChart.setAxisLabelFontSize, yFontSize);
+                .call(MekkoChart.setAxisLabelFontSize, yFontSize)
+                .call(MekkoChart.setAxisLabelFontFamily, yFontFamily)
+                .call(MekkoChart.setAxisLabelFontStyle, yFontBold, yFontItalic, yFontUnderline);
 
             if (tickLabelMargins.yLeft >= leftRightMarginLimit) {
                 y1AxisGraphicsElement
