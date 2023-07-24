@@ -627,7 +627,7 @@ export class MekkoChart implements IVisual {
                 .text(options.axisLabels.x)
                 .classed(MekkoChart.XAxisLabelSelector.className, true);
             
-            xAxisLabel.call(
+                xAxisLabel.call(
                 AxisHelper.LabelLayoutStrategy.clip,
                 width,
                 textMeasurementService.svgEllipsis);
@@ -1647,7 +1647,8 @@ export class MekkoChart implements IVisual {
     private getCategoryAxisFormattingGroup(): powerbi.visuals.FormattingGroup {
         const showCategoryAxis: boolean = <boolean>(this.categoryAxisProperties["show"]) ?? true;
         const showCategoryAxisTitle: boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]) ?? true;
-        const categoryAxisLabelColor: string = <string>(this.categoryAxisProperties["labelColor"]) ?? "black";
+        const categoryAxisLabelFill: Fill = <Fill>(this.categoryAxisProperties["labelColor"]) ?? <Fill>MekkoChart.DefaultSettings.categoryAxis.labelColor;
+        const categoryAxisLabelColor: string = categoryAxisLabelFill.solid.color;
         const categoryAxisFontSize: number = <number>(this.categoryAxisProperties["fontSize"]) ?? 9;
         const categoryAxisFontFamily: string = <string>(this.categoryAxisProperties["fontFamily"]) ?? "Arial";
         const categoryAxisBold: boolean = <boolean>(this.categoryAxisProperties["fontBold"]) ?? false;
@@ -1696,7 +1697,7 @@ export class MekkoChart implements IVisual {
                                 objectName: "categoryAxis",
                                 propertyName: "labelColor"
                             },
-                            value: { value: categoryAxisLabelColor }
+                            value: {value: categoryAxisLabelColor}
                         }
                     }
                 },
@@ -1752,7 +1753,8 @@ export class MekkoChart implements IVisual {
     private getValueAxisFormattingGroup(): powerbi.visuals.FormattingGroup {
         const showValueAxis: boolean = <boolean>(this.valueAxisProperties["show"]) ?? true;
         const showValueAxisTitle: boolean = <boolean>(this.valueAxisProperties["showAxisTitle"]) ?? true;
-        const valueAxisLabelColor: string = <string>(this.valueAxisProperties["labelColor"]) ?? "black";
+        const valueAxisLabelFill: Fill = <Fill>(this.valueAxisProperties["labelColor"]) ?? <Fill>MekkoChart.DefaultSettings.valueAxis.labelColor;
+        const valueAxisLabelColor: string = valueAxisLabelFill.solid.color;
         const valueAxisFontSize: number = <number>(this.valueAxisProperties["fontSize"]) ?? 9;
         const valueAxisFontFamily: string = <string>(this.valueAxisProperties["fontFamily"]) ?? "Arial";
         const valueAxisBold: boolean = <boolean>(this.valueAxisProperties["fontBold"]) ?? false;
