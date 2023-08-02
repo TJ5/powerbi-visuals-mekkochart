@@ -191,7 +191,6 @@ import createBaseColumnChartLayer = columnChartBaseColumnChart.createBaseColumnC
 import isScalar = dataViewUtils.isScalar;
 import getValueAxisProperties = dataViewUtils.getValueAxisProperties;
 import getCategoryAxisProperties = dataViewUtils.getCategoryAxisProperties;
-import { fill } from "lodash";
 import { getFillColorByPropertyName } from "powerbi-visuals-utils-dataviewutils/lib/dataViewObject";
 
 
