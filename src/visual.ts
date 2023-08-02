@@ -45,6 +45,7 @@ import DataViewPropertyValue = powerbi.DataViewPropertyValue;
 import SortDirection = powerbi.SortDirection;
 import IVisual = powerbi.extensibility.visual.IVisual;
 import VisualObjectInstanceEnumeration = powerbi.VisualObjectInstanceEnumeration;
+import ILocalizationManager = powerbi.extensibility.ILocalizationManager;
 
 import {
     MekkoColumnChartData,
@@ -99,6 +100,9 @@ import {
     ColorHelper
 }
     from "powerbi-visuals-utils-colorutils";
+
+import { FormattingSettingsService } from "powerbi-visuals-utils-formattingmodel";
+import { VisualFormattingSettingsModel } from "./settings";
 
 import { max, sum } from "d3-array";
 import { select } from "d3-selection";
@@ -454,6 +458,9 @@ export class MekkoChart implements IVisual {
 
     private brush: BrushBehavior<any>;
 
+    private formattingSettingsService: FormattingSettingsService;
+    private localizationManager: ILocalizationManager;
+
     constructor(options: VisualConstructorOptions) {
         this.init(options);
     }
@@ -522,6 +529,9 @@ export class MekkoChart implements IVisual {
             .classed(MekkoChart.HideLinesOnAxisSelector.className, false);
 
         this.interactivityService = createInteractivityService(this.visualHost);
+        
+        this.localizationManager = this.visualHost.createLocalizationManager();
+        this.formattingSettingsService = new FormattingSettingsService(this.localizationManager);
 
         let legendParent = select(this.rootElement.node()).append("div").classed("legendParentDefault", true);
 
@@ -1233,6 +1243,7 @@ export class MekkoChart implements IVisual {
     }
 
     public getFormattingModel(): powerbi.visuals.FormattingModel {
+        // OLD
         const formattingModel: powerbi.visuals.FormattingModel = {
             cards: [
                 this.getColumnBorderFormattingCard(),
@@ -1244,6 +1255,9 @@ export class MekkoChart implements IVisual {
             ]
         };
         return formattingModel;
+        
+        //NEW
+        //const formattingModel = this.formattingSettingsService.buildFormattingModel()
     }
 
     private getColumnBorderFormattingCard(): powerbi.visuals.FormattingCard {
