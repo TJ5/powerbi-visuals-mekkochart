@@ -1257,7 +1257,7 @@ export class MekkoChart implements IVisual {
         return formattingModel;
         
         //NEW
-        //const formattingModel = this.formattingSettingsService.buildFormattingModel()
+        //const formattingModel = this.formattingSettingsService.buildFormattingModel(this.settingsModel)
     }
 
     private getColumnBorderFormattingCard(): powerbi.visuals.FormattingCard {
