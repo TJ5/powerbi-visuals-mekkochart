@@ -5,18 +5,11 @@ import FormattingSettingsSlice = formattingSettings.Slice;
 import FormattingSettingsModel = formattingSettings.Model;
 
 import { MekkoChart } from "./visual";
-import { BaseColumnChart } from "./columnChart/baseColumnChart";
 
 export class ColumnBorderSettings extends FormattingSettingsCard {
-    /*
-    const borderShow: boolean = <boolean>(this.borderObjectProperties["show"])
-            ?? MekkoChart.DefaultSettings.columnBorder.show;
-    const borderFill: string = getFillColorByPropertyName(
-        this.borderObjectProperties,
-        "color",
-        MekkoChart.DefaultSettings.columnBorder.color);
-    const borderWidth: number = <number>(this.borderObjectProperties["width"]) ?? 1;
-    */
+
+    public name: string = "columnBorder";
+    public displayNameKey?: string = "Visual_ColumnBorder";
 
     public show = new formattingSettings.ToggleSwitch({
         name: "show",
@@ -40,7 +33,49 @@ export class ColumnBorderSettings extends FormattingSettingsCard {
 
     public slices: FormattingSettingsSlice[] = [this.show, this.color, this.width];
 }
+
+export class LegendSettings extends FormattingSettingsCard {
+    public name: string = "legend";
+    public displayNameKey: string = "Visual_Legend";
+
+    public show = new formattingSettings.ToggleSwitch({
+        name: "show",
+        displayNameKey: "Visual_Show",
+        value: true,
+        topLevelToggle: true
+    });
+
+    public showTitle = new formattingSettings.ToggleSwitch({
+        name: "showTitle",
+        displayNameKey: "Visual_Title",
+        value: true
+    });
+
+    public titleText = new formattingSettings.TextInput({
+        name: "titleText",
+        displayNameKey: "Visual_Text",
+        value: "Title Text",
+        placeholder: "Title Text"
+    });
+    
+    public fontFamily = new formattingSettings.FontPicker({
+        name: "fontFamily",
+        displayNameKey: "Visual_Font",
+        value: "Arial"
+    });
+
+    public fontSize = new formattingSettings.NumUpDown({
+        name: "fontSize",
+        displayNameKey: "Visual_Font_Size",
+        value: 9
+    });
+
+    public slices: FormattingSettingsSlice[] = [this.show, this.showTitle, this.titleText, this.fontFamily, this.fontSize];
+
+}
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
-    columnBorder: FormattingSettingsCard = new ColumnBorderSettings();
+    public columnBorder: FormattingSettingsCard = new ColumnBorderSettings();
+    public legend: FormattingSettingsCard = new LegendSettings();
+    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend];
 
 }

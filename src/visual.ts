@@ -460,6 +460,8 @@ export class MekkoChart implements IVisual {
     private formattingSettingsService: FormattingSettingsService;
     private localizationManager: ILocalizationManager;
 
+    private settingsModel: VisualFormattingSettingsModel;
+
     constructor(options: VisualConstructorOptions) {
         this.init(options);
     }
@@ -884,6 +886,7 @@ export class MekkoChart implements IVisual {
 
         if (this.dataViews && this.dataViews.length > 0) {
             this.populateObjectProperties(this.dataViews);
+            this.settingsModel = this.formattingSettingsService.populateFormattingSettingsModel(VisualFormattingSettingsModel, this.dataViews);
         }
 
         for (let layerIndex: number = 0, length: number = this.layers.length; layerIndex < length; layerIndex++) {
@@ -1201,181 +1204,8 @@ export class MekkoChart implements IVisual {
     }
 
     public getFormattingModel(): powerbi.visuals.FormattingModel {
-        // OLD
-        const formattingModel: powerbi.visuals.FormattingModel = {
-            cards: [
-                this.getColumnBorderFormattingCard(),
-                this.getLegendFormattingCard(),
-                this.getLabelsFormattingCard(),
-                this.getSeriesFormattingCard(),
-                this.getAxisFormattingCard(),
-                this.getPointsFormattingCard()
-            ]
-        };
+        const formattingModel = this.formattingSettingsService.buildFormattingModel(this.settingsModel);
         return formattingModel;
-        
-        //NEW
-        //const formattingModel = this.formattingSettingsService.buildFormattingModel(this.settingsModel)
-    }
-
-    private getColumnBorderFormattingCard(): powerbi.visuals.FormattingCard {
-        const borderShow: boolean = <boolean>(this.borderObjectProperties["show"])
-            ?? MekkoChart.DefaultSettings.columnBorder.show;
-        const borderFill: string = getFillColorByPropertyName(
-            this.borderObjectProperties,
-            "color",
-            MekkoChart.DefaultSettings.columnBorder.color);
-        const borderWidth: number = <number>(this.borderObjectProperties["width"]) ?? 1;
-        let columnBorderCard: powerbi.visuals.FormattingCard = {
-            description: "Column Border",
-            displayName: "Column Border",
-            uid: "columnBorder_uid",
-            groups: [
-                {
-                    displayName: "Column Border Group",
-                    uid: "columnBorderCard_columnBorder_group_uid",
-                    slices: [
-                        {
-                            uid: "columnBorderCard_columnBorder_show_uid",
-                            displayName: "Show",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "columnBorder",
-                                        propertyName: "show"
-                                    },
-                                    value: borderShow
-                                }
-                            }
-                        },
-                        {
-                            uid: "columnBorderCard_columnBorder_color_uid",
-                            displayName: "Color",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ColorPicker,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "columnBorder",
-                                        propertyName: "color"
-                                    },
-                                    value: {value: borderFill}
-                                }
-                            }
-                        },
-                        {
-                            uid: "columnBorderCard_columnBorder_width_uid",
-                            displayName: "Width",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.Slider,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "columnBorder",
-                                        propertyName: "width"
-                                    },
-                                    value: borderWidth
-                                }
-                            }
-                        }
-                    ]
-                }
-            ]
-        };
-
-        return columnBorderCard;
-    }
-
-    private getLegendFormattingCard(): powerbi.visuals.FormattingCard {
-        const legendShow: boolean = <boolean>this.legendObjectProperties.show ?? true;
-        const legendShowTitle: boolean = <boolean>this.legendObjectProperties.showTitle ?? true;
-        const legendTitleText: string = <string>this.legendObjectProperties.titleText ??
-            (this.layerLegendData && this.layerLegendData.title ? this.layerLegendData.title : "");
-        const legendFontSize: number = <number>this.legendObjectProperties.fontSize ??
-            (this.layerLegendData && this.layerLegendData.fontSize ? this.layerLegendData.fontSize
-                : MekkoChart.DefaultLabelFontSizeInPt);
-        const legendFontFamily: string = <string>this.legendObjectProperties.fontFamily ?? "Arial";
-
-        let legendCard: powerbi.visuals.FormattingCard = {
-            description: "Legend",
-            displayName: "Legend",
-            uid: "legend_uid",
-            groups: [
-                {
-                    displayName: "Legend",
-                    uid: "legendCard_legend_group_uid",
-                    slices: [
-                        {
-                            uid: "legendCard_legend_show_uid",
-                            displayName: "Show",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "legend",
-                                        propertyName: "show"
-                                    },
-                                    value: legendShow
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_legend_showTitle_uid",
-                            displayName: "Show Title",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "legend",
-                                        propertyName: "showTitle"
-                                    },
-                                    value: legendShowTitle
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_legend_titleText_uid",
-                            displayName: "Title Text",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.TextInput,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "legend",
-                                        propertyName: "titleText"
-                                    },
-                                    value: legendTitleText,
-                                    placeholder: "Title Text",
-                                }
-                            }
-                        },
-                        {
-                            uid: "legendCard_legend_titleFontControl_uid",
-                            displayName: "Legend Title Font",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.FontControl,
-                                properties: {
-                                    fontFamily: {
-                                        descriptor: {
-                                            objectName: "legend",
-                                            propertyName: "fontFamily"
-                                        },
-                                        value: legendFontFamily
-                                    },
-                                    fontSize: {
-                                        descriptor: {
-                                            objectName: "legend",
-                                            propertyName: "fontSize"
-                                        },
-                                        value: legendFontSize
-                                    }
-                                }
-                            }
-                        },
-                    ]
-                }
-            ]
-        };
-        legendCard.groups.push(this.getSortLegendFormattingGroup());
-        return legendCard;
     }
 
     private getSortLegendFormattingGroup(): powerbi.visuals.FormattingGroup {
