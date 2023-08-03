@@ -156,12 +156,11 @@ type IInteractivityService = IInteractivityServiceCommon<SelectableDataPoint>;
 
 // powerbi.extensibility.utils.formatting
 import {
-    valueFormatter as vf,
-    textMeasurementService as tms
+    valueFormatter,
+    textMeasurementService,
+    interfaces as tmsInterfaces
 } from "powerbi-visuals-utils-formattingutils";
-import TextProperties = tms.TextProperties;
-import textMeasurementService = tms.textMeasurementService;
-import valueFormatter = vf.valueFormatter;
+import TextProperties = tmsInterfaces.TextProperties;
 
 // powerbi.extensibility.utils.type
 
@@ -2104,7 +2103,7 @@ export class MekkoChart implements IVisual {
 
         let svgHeight: number = textMeasurementService.estimateSvgTextHeight({
             // fontFamily: MekkoChart.LegendBarTextFont,
-            fontFamily: this.legendObjectProperties.fontFamily ?? "helvetica, arial, sans-serif;",
+            fontFamily: <string>this.legendObjectProperties.fontFamily ?? "helvetica, arial, sans-serif;",
             fontSize: PixelConverter.toString(+legendProperties["fontSize"] + MekkoChart.LegendBarHeightMargin),
             text: "AZ"
         });
