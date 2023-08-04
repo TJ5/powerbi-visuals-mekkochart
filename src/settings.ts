@@ -150,12 +150,39 @@ export class LabelsSettings extends FormattingSettingsCard {
     public slices: FormattingSettingsSlice[] = [this.show, this.forceDisplay, this.color, this.labelPrecision, this.fontSize];
 }
 
+export class SeriesSortSettings extends FormattingSettingsCard {
+    public name: string = "sortSeries";
+    public displayNameKey: string = "Visual_SortSeries";
+
+    public enabled = new formattingSettings.ToggleSwitch({
+        name: "enabled",
+        displayNameKey: "Visual_Enabled",
+        value: false,
+        topLevelToggle: true
+    });
+
+    public direction = new formattingSettings.AutoDropdown({
+        name: "direction",
+        displayNameKey: "Visual_Direction",
+        value: "asc"
+    });
+
+    public displayPercents = new formattingSettings.AutoDropdown({
+        name: "displayPercents",
+        displayNameKey: "Visual_DisplayPercents",
+        value: "category"
+    });
+
+    public slices: FormattingSettingsSlice[] = [this.enabled, this.direction, this.displayPercents];
+}
+
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     public columnBorder: FormattingSettingsCard = new ColumnBorderSettings();
     public legend: FormattingSettingsCard = new LegendSettings();
     public sortLegend: FormattingSettingsCard = new SortLegendSettings();
     public labels: FormattingSettingsCard = new LabelsSettings();
+    public sortSeries: FormattingSettingsCard = new SeriesSortSettings();
 
-    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend, this.sortLegend, this.labels];
+    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend, this.sortLegend, this.labels, this.sortSeries];
 
 }
