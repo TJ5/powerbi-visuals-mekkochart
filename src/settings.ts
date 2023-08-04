@@ -71,9 +71,38 @@ export class LegendSettings extends FormattingSettingsCard {
     });
 
     public slices: FormattingSettingsSlice[] = [this.show, this.showTitle, this.titleText, this.fontFamily, this.fontSize];
-
 }
 
+export class SortLegendSettings extends FormattingSettingsCard {
+    public name: string = "sortLegend";
+    public displayNameKey: string = "Visual_SortLegend";
+
+    public enabled = new formattingSettings.ToggleSwitch({
+        name: "enabled",
+        displayNameKey: "Visual_Enabled",
+        value: false,
+        topLevelToggle: true
+    });
+
+    public direction = new formattingSettings.AutoDropdown({
+        name: "direction",
+        displayNameKey: "Visual_Direction",
+        value: "asc"
+    });
+
+    public groupByCategory = new formattingSettings.ToggleSwitch({
+        name: "groupByCategory",
+        displayNameKey: "Visual_Group_Legend",
+        value: false,
+    });
+
+    public groupByCategoryDirection = new formattingSettings.AutoDropdown({
+        name: "groupByCategoryDirection",
+        displayNameKey: "Visual_Group_Direction",
+        value: "asc"
+    });
+    public slices: FormattingSettingsSlice[] = [this.enabled, this.direction, this.groupByCategory, this.groupByCategoryDirection];
+}
 export class LabelsSettings extends FormattingSettingsCard {
     public name: string = "labels";
     public displayNameKey: string = "Visual_Data_Labels";
@@ -124,8 +153,9 @@ export class LabelsSettings extends FormattingSettingsCard {
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     public columnBorder: FormattingSettingsCard = new ColumnBorderSettings();
     public legend: FormattingSettingsCard = new LegendSettings();
+    public sortLegend: FormattingSettingsCard = new SortLegendSettings();
     public labels: FormattingSettingsCard = new LabelsSettings();
 
-    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend, this.labels];
+    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend, this.sortLegend, this.labels];
 
 }
