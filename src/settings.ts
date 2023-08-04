@@ -176,13 +176,27 @@ export class SeriesSortSettings extends FormattingSettingsCard {
     public slices: FormattingSettingsSlice[] = [this.enabled, this.direction, this.displayPercents];
 }
 
+export class xAxisLabelsSettings extends FormattingSettingsCard {
+    public name: string = "xAxisLabels";
+    public displayNameKey: string = "Visual_XAxisLabelsRotation";
+
+    public enableRotataion = new formattingSettings.ToggleSwitch({
+        name: "enableRotataion",
+        displayNameKey: "Visual_Enabled",
+        value: false,
+        topLevelToggle: true
+    });
+
+    public slices: FormattingSettingsSlice[] = [this.enableRotataion];
+}
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     public columnBorder: FormattingSettingsCard = new ColumnBorderSettings();
     public legend: FormattingSettingsCard = new LegendSettings();
     public sortLegend: FormattingSettingsCard = new SortLegendSettings();
     public labels: FormattingSettingsCard = new LabelsSettings();
     public sortSeries: FormattingSettingsCard = new SeriesSortSettings();
+    public xAxisLabels:FormattingSettingsCard = new xAxisLabelsSettings();
 
-    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend, this.sortLegend, this.labels, this.sortSeries];
+    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend, this.sortLegend, this.labels, this.sortSeries, this.xAxisLabels];
 
 }

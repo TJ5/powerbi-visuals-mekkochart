@@ -1208,42 +1208,6 @@ export class MekkoChart implements IVisual {
         return formattingModel;
     }
 
-    private getAxisFormattingCard(): powerbi.visuals.FormattingCard {
-        const xAxisLabelsSettings: MekkoXAxisLabelsSettings = (<BaseColumnChart>this.layers[0]).getXAxisLabelsSettings();
-        const xAxisRotationEnabled: boolean = xAxisLabelsSettings.enableRotataion ?? false;
-
-        let axisCard: powerbi.visuals.FormattingCard = {
-            description: "Axis",
-            displayName: "Axis",
-            uid: "axis_uid",
-            groups: [
-                {
-                    displayName: "Axis Labels",
-                    uid: "axisCard_axisLabels_group_uid",
-                    slices: [
-                        {
-                            uid: "axisCard_axisLabels_enable_uid",
-                            displayName: "Enable Rotation",
-                            control: {
-                                type: powerbi.visuals.FormattingComponent.ToggleSwitch,
-                                properties: {
-                                    descriptor: {
-                                        objectName: "xAxisLabels",
-                                        propertyName: "enableRotataion"
-                                    },
-                                    value: xAxisRotationEnabled
-                                }
-                            }
-                        },
-                    ]
-                }
-            ]
-        };
-        axisCard.groups.push(this.getCategoryAxisFormattingGroup());
-        axisCard.groups.push(this.getValueAxisFormattingGroup());
-        return axisCard;
-    }
-
     private getCategoryAxisFormattingGroup(): powerbi.visuals.FormattingGroup {
         const showCategoryAxis: boolean = <boolean>(this.categoryAxisProperties["show"]) ?? true;
         const showCategoryAxisTitle: boolean = <boolean>(this.categoryAxisProperties["showAxisTitle"]) ?? true;
