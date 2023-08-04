@@ -106,6 +106,12 @@ export class LabelsSettings extends FormattingSettingsCard {
         value: 1
     });
 
+    public showAll = new formattingSettings.ToggleSwitch({
+        name: "showAll",
+        displayNameKey: "Visual_Show_All",
+        value: false
+    });
+
     public fontSize = new formattingSettings.NumUpDown({
         name: "fontSize",
         displayNameKey: "Visual_Font_Size",
