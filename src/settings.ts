@@ -73,9 +73,53 @@ export class LegendSettings extends FormattingSettingsCard {
     public slices: FormattingSettingsSlice[] = [this.show, this.showTitle, this.titleText, this.fontFamily, this.fontSize];
 
 }
+
+export class LabelsSettings extends FormattingSettingsCard {
+    public name: string = "labels";
+    public displayNameKey: string = "Visual_Data_Labels";
+    public descriptionKey: string = "Visual_Description_DataLabels";
+
+    public show = new formattingSettings.ToggleSwitch({
+        name: "show",
+        displayNameKey: "Visual_Show",
+        value: false,
+        topLevelToggle: true
+    });
+
+    public forceDisplay = new formattingSettings.ToggleSwitch({
+        name: "forceDisplay",
+        displayNameKey: "Visual_Force_Display",
+        value: false
+    });
+
+    public color = new formattingSettings.ColorPicker({
+        name: "color",
+        displayNameKey: "Visual_Color",
+        descriptionKey: "Visual_Description_Color",
+        value: {value: "white"},
+    });
+
+    public labelPrecision = new formattingSettings.NumUpDown({
+        name: "labelPrecision",
+        displayNameKey: "Visual_Decimal_Places",
+        descriptionKey: "Visual_Description_DecimalPlaces",
+        value: 1
+    });
+
+    public fontSize = new formattingSettings.NumUpDown({
+        name: "fontSize",
+        displayNameKey: "Visual_Font_Size",
+        value: 9
+    });
+
+    public slices: FormattingSettingsSlice[] = [this.show, this.forceDisplay, this.color, this.labelPrecision, this.fontSize];
+}
+
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     public columnBorder: FormattingSettingsCard = new ColumnBorderSettings();
     public legend: FormattingSettingsCard = new LegendSettings();
-    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend];
+    public labels: FormattingSettingsCard = new LabelsSettings();
+
+    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend, this.labels];
 
 }
