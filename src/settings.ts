@@ -207,6 +207,69 @@ export class CategoryAxisSettings extends FormattingSettingsCard {
         value: true,
     });
 
+    public intersections = new formattingSettings.NumUpDown({
+        name: "intersections",
+        displayNameKey: "Visual_Intersection",
+        value: 0
+    });
+
+    public labelColor = new formattingSettings.ColorPicker({
+        name: "labelColor",
+        displayNameKey: "Visual_Color",
+        descriptionKey: "Visual_Description_Color",
+        value: {value: "black"}
+    });
+
+    public fontControl = new formattingSettings.FontControl({
+        name: "fontControl",
+        displayNameKey: "Visual_Font_Control",
+        fontFamily: new formattingSettings.FontPicker({
+            name: "fontFamily",
+            displayNameKey: "Visual_Font",
+            value: "Arial"
+        }),
+        fontSize: new formattingSettings.NumUpDown({
+            name: "fontSize",
+            displayNameKey: "Visual_Font_Size",
+            value: 9
+        }),
+        bold: new formattingSettings.ToggleSwitch({
+            name: "fontBold",
+            displayNameKey: "Visual_Font_Bold",
+            value: false
+        }),
+        italic: new formattingSettings.ToggleSwitch({
+            name: "fontItalic",
+            displayNameKey: "Visual_Font_Italic",
+            value: false
+        }),
+        underline: new formattingSettings.ToggleSwitch({
+            name: "fontUnderline",
+            displayNameKey: "Visual_Font_Underline",
+            value: false
+        })
+    });
+
+    public slices: FormattingSettingsSlice[] = [this.show, this.showTitle, this.intersections, this.labelColor, this.fontControl];
+}
+
+export class ValueAxisSettings extends FormattingSettingsCard {
+    public name: string = "valueAxis";
+    public displayNameKey:string = "Visual_YAxis";
+
+    public show = new formattingSettings.ToggleSwitch({
+        name: "show",
+        displayNameKey: "Visual_Show",
+        value: true,
+        topLevelToggle: true
+    });
+
+    public showTitle = new formattingSettings.ToggleSwitch({
+        name: "showAxisTitle",
+        displayNameKey: "Visual_Title",
+        value: true,
+    });
+
     public labelColor = new formattingSettings.ColorPicker({
         name: "labelColor",
         displayNameKey: "Visual_Color",
@@ -246,6 +309,7 @@ export class CategoryAxisSettings extends FormattingSettingsCard {
 
     public slices: FormattingSettingsSlice[] = [this.show, this.showTitle, this.labelColor, this.fontControl];
 }
+
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     public columnBorder: FormattingSettingsCard = new ColumnBorderSettings();
     public legend: FormattingSettingsCard = new LegendSettings();
@@ -254,6 +318,7 @@ export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     public sortSeries: FormattingSettingsCard = new SeriesSortSettings();
     public xAxisLabels: FormattingSettingsCard = new XAxisLabelsSettings();
     public categoryAxis: FormattingSettingsCard = new CategoryAxisSettings();
+    public valueAxis: FormattingSettingsCard = new ValueAxisSettings();
 
     public cards: FormattingSettingsCard[] = [
         this.columnBorder,
@@ -261,7 +326,8 @@ export class VisualFormattingSettingsModel extends FormattingSettingsModel {
         this.sortLegend,
         this.labels, this.sortSeries,
         this.xAxisLabels,
-        this.categoryAxis
+        this.categoryAxis,
+        this.valueAxis
     ];
 
 }
