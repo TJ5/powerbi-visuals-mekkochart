@@ -443,8 +443,8 @@
                     }
                 },
                 "colorDistribution": {
-                    "displayName": "Color distibution by value",
-                    "displayNameKey": "Visual_ColorDistibution",
+                    "displayName": "Color distribution by value",
+                    "displayNameKey": "Visual_ColorDistribution",
                     "type": {
                         "bool": true
                     }
