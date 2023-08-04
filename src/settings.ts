@@ -176,7 +176,7 @@ export class SeriesSortSettings extends FormattingSettingsCard {
     public slices: FormattingSettingsSlice[] = [this.enabled, this.direction, this.displayPercents];
 }
 
-export class xAxisLabelsSettings extends FormattingSettingsCard {
+export class XAxisLabelsSettings extends FormattingSettingsCard {
     public name: string = "xAxisLabels";
     public displayNameKey: string = "Visual_XAxisLabelsRotation";
 
@@ -189,14 +189,79 @@ export class xAxisLabelsSettings extends FormattingSettingsCard {
 
     public slices: FormattingSettingsSlice[] = [this.enableRotataion];
 }
+
+export class CategoryAxisSettings extends FormattingSettingsCard {
+    public name: string = "categoryAxis";
+    public displayNameKey:string = "Visual_XAxis";
+
+    public show = new formattingSettings.ToggleSwitch({
+        name: "show",
+        displayNameKey: "Visual_Show",
+        value: true,
+        topLevelToggle: true
+    });
+
+    public showTitle = new formattingSettings.ToggleSwitch({
+        name: "showAxisTitle",
+        displayNameKey: "Visual_Title",
+        value: true,
+    });
+
+    public labelColor = new formattingSettings.ColorPicker({
+        name: "labelColor",
+        displayNameKey: "Visual_Color",
+        descriptionKey: "Visual_Description_Color",
+        value: {value: "black"}
+    });
+
+    public fontControl = new formattingSettings.FontControl({
+        name: "fontControl",
+        displayNameKey: "Visual_Font_Control",
+        fontFamily: new formattingSettings.FontPicker({
+            name: "fontFamily",
+            displayNameKey: "Visual_Font",
+            value: "Arial"
+        }),
+        fontSize: new formattingSettings.NumUpDown({
+            name: "fontSize",
+            displayNameKey: "Visual_Font_Size",
+            value: 9
+        }),
+        bold: new formattingSettings.ToggleSwitch({
+            name: "fontBold",
+            displayNameKey: "Visual_Font_Bold",
+            value: false
+        }),
+        italic: new formattingSettings.ToggleSwitch({
+            name: "fontItalic",
+            displayNameKey: "Visual_Font_Italic",
+            value: false
+        }),
+        underline: new formattingSettings.ToggleSwitch({
+            name: "fontUnderline",
+            displayNameKey: "Visual_Font_Underline",
+            value: false
+        })
+    });
+
+    public slices: FormattingSettingsSlice[] = [this.show, this.showTitle, this.labelColor, this.fontControl];
+}
 export class VisualFormattingSettingsModel extends FormattingSettingsModel {
     public columnBorder: FormattingSettingsCard = new ColumnBorderSettings();
     public legend: FormattingSettingsCard = new LegendSettings();
     public sortLegend: FormattingSettingsCard = new SortLegendSettings();
     public labels: FormattingSettingsCard = new LabelsSettings();
     public sortSeries: FormattingSettingsCard = new SeriesSortSettings();
-    public xAxisLabels:FormattingSettingsCard = new xAxisLabelsSettings();
+    public xAxisLabels: FormattingSettingsCard = new XAxisLabelsSettings();
+    public categoryAxis: FormattingSettingsCard = new CategoryAxisSettings();
 
-    public cards: FormattingSettingsCard[] = [this.columnBorder, this.legend, this.sortLegend, this.labels, this.sortSeries, this.xAxisLabels];
+    public cards: FormattingSettingsCard[] = [
+        this.columnBorder,
+        this.legend,
+        this.sortLegend,
+        this.labels, this.sortSeries,
+        this.xAxisLabels,
+        this.categoryAxis
+    ];
 
 }
