@@ -180,7 +180,6 @@ import * as columnChartBaseColumnChart from "./columnChart/baseColumnChart";
 // columnChart
 import IColumnChart = columnChart.IColumnChart;
 import BaseColumnChart = columnChartBaseColumnChart.BaseColumnChart;
-import createBaseColumnChartLayer = columnChartBaseColumnChart.createBaseColumnChartLayer;
 
 // dataViewUtils
 import isScalar = dataViewUtils.isScalar;
@@ -2629,7 +2628,7 @@ export function createLayers(
         interactivityService
     };
 
-    layers.push(createBaseColumnChartLayer(
+    layers.push(columnChartBaseColumnChart.createBaseColumnChartLayer(
         MekkoVisualChartType.hundredPercentStackedColumn,
         cartesianOptions));
 
